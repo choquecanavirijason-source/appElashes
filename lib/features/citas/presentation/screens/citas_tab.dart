@@ -1,0 +1,231 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../core/presentation/atoms/initials_avatar.dart';
+import '../../../../core/presentation/atoms/status_badge.dart';
+import '../../../../core/presentation/organisms/empty_state.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../clientes/presentation/providers/clients_provider.dart';
+import '../../../operarias/presentation/providers/operarias_provider.dart';
+import '../../domain/entities/appointment.dart';
+import '../providers/appointments_provider.dart';
+import '../widgets/appointment_form_sheet.dart';
+
+class CitasTab extends ConsumerWidget {
+  const CitasTab({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final citas = ref.watch(appointmentsProvider);
+
+    return Scaffold(
+      body: citas.isEmpty
+          ? const EmptyState(
+              icon: Icons.calendar_today_outlined,
+              title: 'Sin citas',
+              message: 'Agenda la primera cita con +',
+            )
+          : _GroupedAppointmentsList(citas: citas),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.brandPrimary,
+        foregroundColor: Colors.white,
+        onPressed: () => AppointmentFormSheet.show(context),
+        icon: const Icon(Icons.add),
+        label: const Text('Nueva cita'),
+      ),
+    );
+  }
+}
+
+class _GroupedAppointmentsList extends StatelessWidget {
+  const _GroupedAppointmentsList({required this.citas});
+
+  final List<Appointment> citas;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final hoy = DateTime(now.year, now.month, now.day);
+    final manana = hoy.add(const Duration(days: 1));
+
+    final hoyList = <Appointment>[];
+    final mananaList = <Appointment>[];
+    final futurasList = <Appointment>[];
+    final pasadasList = <Appointment>[];
+
+    for (final c in citas) {
+      final d = DateTime(c.fechaHora.year, c.fechaHora.month, c.fechaHora.day);
+      if (d == hoy) {
+        hoyList.add(c);
+      } else if (d == manana) {
+        mananaList.add(c);
+      } else if (d.isAfter(manana)) {
+        futurasList.add(c);
+      } else {
+        pasadasList.add(c);
+      }
+    }
+
+    final items = <_Item>[];
+    void addGroup(String title, List<Appointment> data) {
+      if (data.isEmpty) return;
+      items.add(_Item.header(title));
+      for (final c in data) {
+        items.add(_Item.appointment(c));
+      }
+    }
+
+    addGroup('Hoy', hoyList);
+    addGroup('Mañana', mananaList);
+    addGroup('Próximas', futurasList);
+    addGroup('Pasadas', pasadasList);
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 88),
+      itemCount: items.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, i) {
+        final item = items[i];
+        if (item.isHeader) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 14, bottom: 4),
+            child: Text(
+              item.headerTitle!,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.brandPrimary,
+              ),
+            ),
+          );
+        }
+        return _AppointmentCard(cita: item.appointment!);
+      },
+    );
+  }
+}
+
+class _Item {
+  _Item.header(this.headerTitle)
+      : appointment = null,
+        isHeader = true;
+  _Item.appointment(this.appointment)
+      : headerTitle = null,
+        isHeader = false;
+
+  final String? headerTitle;
+  final Appointment? appointment;
+  final bool isHeader;
+}
+
+class _AppointmentCard extends ConsumerWidget {
+  const _AppointmentCard({required this.cita});
+
+  final Appointment cita;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cliente = ref.watch(clientByIdProvider(cita.clienteId));
+    final operaria = ref.watch(operariaByIdProvider(cita.operariaId));
+    final hora = DateFormat('HH:mm').format(cita.fechaHora);
+    final precio = NumberFormat.currency(
+      locale: 'es_BO',
+      symbol: 'Bs ',
+      decimalDigits: 0,
+    ).format(cita.precio);
+
+    return Card(
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outlineVariant.withValues(
+                alpha: 0.5,
+              ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              children: [
+                Text(
+                  hora,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.brandPrimary,
+                  ),
+                ),
+                Text(
+                  '${cita.duracionMinutos}min',
+                  style: const TextStyle(fontSize: 11, color: Colors.black54),
+                ),
+              ],
+            ),
+            const SizedBox(width: 12),
+            Container(
+              width: 3,
+              height: 56,
+              decoration: BoxDecoration(
+                color: cita.estado.color,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    cliente?.nombreCompleto ?? 'Cliente desconocido',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    cita.servicio,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      InitialsAvatar(
+                        initials: operaria?.iniciales ?? '?',
+                        size: 22,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          operaria?.nombre ?? '—',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        precio,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            StatusBadge(label: cita.estado.label, color: cita.estado.color),
+          ],
+        ),
+      ),
+    );
+  }
+}

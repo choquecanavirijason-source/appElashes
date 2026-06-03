@@ -1,0 +1,66 @@
+name: elashes
+description: "Admin Elashes — panel móvil/tablet para gestión del salón."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Estado
+  flutter_riverpod: ^2.5.1
+
+  # HTTP
+  dio: ^5.7.0
+
+  # Configuración por entorno (.env)
+  flutter_dotenv: ^5.2.1
+
+  # Navegación
+  go_router: ^14.6.0
+
+  # Persistencia
+  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.2
+
+  # Serialización
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # UI / utilidades
+  google_fonts: ^6.2.1
+  lucide_icons: ^0.257.0
+  cached_network_image: ^3.4.1
+  data_table_2: ^2.5.16
+  fl_chart: ^0.69.0
+  intl: ^0.20.2
+  image_picker: ^1.1.2
+
+  # PDF (Dart puro). El plugin `printing` se reintroduce en Fase 6 (POS):
+  # fija AGP 7.3.0 y requiere descargas desde dl.google.com que en esta
+  # máquina están bloqueadas.
+  pdf: ^3.11.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  mocktail: ^1.0.4
+
+  build_runner: ^2.4.13
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
