@@ -18,8 +18,21 @@ class AppTheme {
     final scheme = ColorScheme.fromSeed(
       seedColor: AppColors.brandPrimary,
       brightness: Brightness.dark,
+    ).copyWith(
+      surface: AppColors.darkBg,
+      surfaceContainerLowest: AppColors.darkBg,
+      surfaceContainerLow: AppColors.darkCard,
+      surfaceContainer: AppColors.darkCard,
+      surfaceContainerHigh: AppColors.darkCardElevated,
+      surfaceContainerHighest: AppColors.darkCardElevated,
+      onSurface: Colors.white,
+      onSurfaceVariant: const Color(0xFF9CA3AF),
+      outline: const Color(0xFF2A2A2A),
+      outlineVariant: const Color(0xFF1E1E1E),
     );
-    return _base(scheme);
+    return _base(scheme).copyWith(
+      scaffoldBackgroundColor: AppColors.darkBg,
+    );
   }
 
   static ThemeData _base(ColorScheme scheme) {

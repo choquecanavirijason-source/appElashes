@@ -1,0 +1,312 @@
+import 'package:flutter/material.dart';
+
+import '../../../../core/theme/app_colors.dart';
+
+class AdminTab extends StatelessWidget {
+  const AdminTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+          children: [
+            const SizedBox(height: 8),
+            const Text(
+              'Administración',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 28),
+            const _SectionLabel('OPERACIONES'),
+            const SizedBox(height: 12),
+            _ListTileCard(
+              iconBg: AppColors.iconBgAmber,
+              iconColor: AppColors.statusEnEspera,
+              icon: Icons.point_of_sale,
+              title: 'Recepción',
+              subtitle: 'Check-in / check-out de clientas',
+              badge: _HoyBadge(),
+            ),
+            const SizedBox(height: 10),
+            const _ListTileCard(
+              iconBg: AppColors.iconBgGreen,
+              iconColor: AppColors.onlineGreen,
+              icon: Icons.payments_outlined,
+              title: 'Comisiones',
+              subtitle: 'Pagos a operarias y saldos',
+            ),
+            const SizedBox(height: 16),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1.0,
+              children: const [
+                _GridCard(
+                  iconBg: AppColors.iconBgOlive,
+                  iconColor: AppColors.goldAccent,
+                  icon: Icons.spa_outlined,
+                  title: 'Servicios',
+                  subtitle: 'Técnicas y comisiones',
+                ),
+                _GridCard(
+                  iconBg: AppColors.iconBgGreen,
+                  iconColor: AppColors.onlineGreen,
+                  icon: Icons.receipt_long_outlined,
+                  title: 'Pagos',
+                  subtitle: 'Cobros y métodos',
+                ),
+                _GridCard(
+                  iconBg: AppColors.iconBgTeal,
+                  iconColor: AppColors.statusAtendido,
+                  icon: Icons.history,
+                  title: 'Historial',
+                  subtitle: 'Servicios realizados',
+                ),
+                _GridCard(
+                  iconBg: AppColors.iconBgOrange,
+                  iconColor: Color(0xFFF97316),
+                  icon: Icons.groups_outlined,
+                  title: 'Equipo',
+                  subtitle: 'Operarias y staff',
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            const _SectionLabel('NEGOCIO'),
+            const SizedBox(height: 12),
+            const _ListTileCard(
+              iconBg: AppColors.iconBgOlive,
+              iconColor: AppColors.goldAccent,
+              icon: Icons.store_outlined,
+              title: 'Sucursales',
+              subtitle: 'Crea y administra tus locales',
+              badge: _RoleBadge(label: 'Super Admin'),
+            ),
+            const SizedBox(height: 10),
+            const _ListTileCard(
+              iconBg: AppColors.iconBgTeal,
+              iconColor: AppColors.statusEnServicio,
+              icon: Icons.account_balance_wallet_outlined,
+              title: 'Cierres de caja',
+              subtitle: 'Auditoría de cierres en todas las sucursales',
+            ),
+            const SizedBox(height: 10),
+            const _ListTileCard(
+              iconBg: Color(0xFF1C1C1C),
+              iconColor: Color(0xFF9CA3AF),
+              icon: Icons.settings_outlined,
+              title: 'Configuración',
+              subtitle: 'APIs, integraciones y ajustes',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Color(0xFF6B7280),
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1.2,
+      ),
+    );
+  }
+}
+
+class _ListTileCard extends StatelessWidget {
+  const _ListTileCard({
+    required this.iconBg,
+    required this.iconColor,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.badge,
+  });
+
+  final Color iconBg;
+  final Color iconColor;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget? badge;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.darkCard,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.darkCardElevated),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        leading: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: iconBg,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: iconColor, size: 22),
+        ),
+        title: Row(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
+            ),
+            if (badge != null) ...[
+              const SizedBox(width: 8),
+              badge!,
+            ],
+          ],
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Text(
+            subtitle,
+            style: const TextStyle(color: Color(0xFF6B7280), fontSize: 12),
+          ),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
+          color: Color(0xFF4B5563),
+          size: 20,
+        ),
+        onTap: () {},
+      ),
+    );
+  }
+}
+
+class _GridCard extends StatelessWidget {
+  const _GridCard({
+    required this.iconBg,
+    required this.iconColor,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final Color iconBg;
+  final Color iconColor;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.darkCard,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.darkCardElevated),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: iconColor, size: 22),
+            ),
+            const Spacer(),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: const TextStyle(
+                color: Color(0xFF6B7280),
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HoyBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: AppColors.statusEnEspera.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: const Text(
+        'HOY',
+        style: TextStyle(
+          color: AppColors.statusEnEspera,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+}
+
+class _RoleBadge extends StatelessWidget {
+  const _RoleBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.goldAccent.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: AppColors.goldAccent,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
