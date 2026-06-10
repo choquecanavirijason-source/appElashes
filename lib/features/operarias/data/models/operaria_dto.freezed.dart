@@ -368,7 +368,7 @@ OperariaDto _$OperariaDtoFromJson(Map<String, dynamic> json) {
 mixin _$OperariaDto {
   int get id => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_active')
   bool get isActive => throw _privateConstructorUsedError;
@@ -402,7 +402,7 @@ abstract class $OperariaDtoCopyWith<$Res> {
   $Res call(
       {int id,
       String username,
-      String email,
+      String? email,
       String? phone,
       @JsonKey(name: 'is_active') bool isActive,
       @JsonKey(name: 'created_at') DateTime? createdAt,
@@ -433,7 +433,7 @@ class _$OperariaDtoCopyWithImpl<$Res, $Val extends OperariaDto>
   $Res call({
     Object? id = null,
     Object? username = null,
-    Object? email = null,
+    Object? email = freezed,
     Object? phone = freezed,
     Object? isActive = null,
     Object? createdAt = freezed,
@@ -452,10 +452,10 @@ class _$OperariaDtoCopyWithImpl<$Res, $Val extends OperariaDto>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String,
-      email: null == email
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
@@ -531,7 +531,7 @@ abstract class _$$OperariaDtoImplCopyWith<$Res>
   $Res call(
       {int id,
       String username,
-      String email,
+      String? email,
       String? phone,
       @JsonKey(name: 'is_active') bool isActive,
       @JsonKey(name: 'created_at') DateTime? createdAt,
@@ -562,7 +562,7 @@ class __$$OperariaDtoImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? username = null,
-    Object? email = null,
+    Object? email = freezed,
     Object? phone = freezed,
     Object? isActive = null,
     Object? createdAt = freezed,
@@ -581,10 +581,10 @@ class __$$OperariaDtoImplCopyWithImpl<$Res>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String,
-      email: null == email
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
@@ -627,7 +627,7 @@ class _$OperariaDtoImpl implements _OperariaDto {
   const _$OperariaDtoImpl(
       {required this.id,
       required this.username,
-      required this.email,
+      this.email,
       this.phone,
       @JsonKey(name: 'is_active') this.isActive = true,
       @JsonKey(name: 'created_at') this.createdAt,
@@ -645,7 +645,7 @@ class _$OperariaDtoImpl implements _OperariaDto {
   @override
   final String username;
   @override
-  final String email;
+  final String? email;
   @override
   final String? phone;
   @override
@@ -721,7 +721,7 @@ abstract class _OperariaDto implements OperariaDto {
   const factory _OperariaDto(
       {required final int id,
       required final String username,
-      required final String email,
+      final String? email,
       final String? phone,
       @JsonKey(name: 'is_active') final bool isActive,
       @JsonKey(name: 'created_at') final DateTime? createdAt,
@@ -739,7 +739,7 @@ abstract class _OperariaDto implements OperariaDto {
   @override
   String get username;
   @override
-  String get email;
+  String? get email;
   @override
   String? get phone;
   @override

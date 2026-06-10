@@ -30,7 +30,7 @@ class OperariaDto with _$OperariaDto {
   const factory OperariaDto({
     required int id,
     required String username,
-    required String email,
+    String? email,
     String? phone,
     @JsonKey(name: 'is_active') @Default(true) bool isActive,
     @JsonKey(name: 'created_at') DateTime? createdAt,

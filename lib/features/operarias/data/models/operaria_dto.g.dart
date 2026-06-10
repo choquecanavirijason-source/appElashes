@@ -38,7 +38,7 @@ _$OperariaDtoImpl _$$OperariaDtoImplFromJson(Map<String, dynamic> json) =>
     _$OperariaDtoImpl(
       id: (json['id'] as num).toInt(),
       username: json['username'] as String,
-      email: json['email'] as String,
+      email: json['email'] as String?,
       phone: json['phone'] as String?,
       isActive: json['is_active'] as bool? ?? true,
       createdAt: json['created_at'] == null
