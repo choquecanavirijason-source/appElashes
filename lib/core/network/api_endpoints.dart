@@ -26,6 +26,7 @@ class ApiEndpoints {
 
   // Servicios
   static const String agendaServices = '/agenda/services';
+  static String agendaServiceById(int id) => '/agenda/services/$id';
   static const String agendaServiceUploadImage = '/agenda/services/upload-image';
   static const String serviceCategories = '/services/categories';
   static const String agendaClientsForSelect = '/agenda/clients-for-select';
@@ -34,6 +35,7 @@ class ApiEndpoints {
 
   // Citas / tickets
   static const String agendaAppointments = '/agenda/appointments';
+  static String agendaAppointmentById(int id) => '/agenda/appointments/$id';
   static const String agendaMobileAvailable =
       '/agenda/appointments/mobile/available';
 
@@ -67,6 +69,7 @@ class ApiEndpoints {
 
   // Admin
   static const String adminUsers = '/admin/users';
+  static String adminUserById(int id) => '/admin/users/$id';
   static const String adminRoles = '/admin/roles';
   static const String adminPermissions = '/admin/permissions';
 }

@@ -4,10 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/presentation/atoms/initials_avatar.dart';
 import '../../../../core/presentation/atoms/status_badge.dart';
-import '../../../../core/presentation/organisms/empty_state.dart';
+import '../../../../core/presentation/organisms/async_value_view.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../clientes/presentation/providers/clients_provider.dart';
-import '../../../operarias/presentation/providers/operarias_provider.dart';
 import '../../domain/entities/appointment.dart';
 import '../providers/appointments_provider.dart';
 import '../widgets/appointment_form_sheet.dart';
@@ -17,16 +15,40 @@ class CitasTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final citas = ref.watch(appointmentsProvider);
+    final state = ref.watch(appointmentsListProvider);
 
     return Scaffold(
-      body: citas.isEmpty
-          ? const EmptyState(
-              icon: Icons.calendar_today_outlined,
-              title: 'Sin citas',
-              message: 'Agenda la primera cita con +',
-            )
-          : _GroupedAppointmentsList(citas: citas),
+      body: AsyncValueView<List<Appointment>>(
+        value: state,
+        onRetry: () => ref.invalidate(appointmentsListProvider),
+        builder: (citas) => citas.isEmpty
+            ? const Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 48,
+                      color: AppColors.brandPrimary,
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      'Sin citas',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Agenda la primera cita con +',
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                  ],
+                ),
+              )
+            : _GroupedAppointmentsList(citas: citas),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.brandPrimary,
         foregroundColor: Colors.white,
@@ -55,7 +77,8 @@ class _GroupedAppointmentsList extends StatelessWidget {
     final pasadasList = <Appointment>[];
 
     for (final c in citas) {
-      final d = DateTime(c.fechaHora.year, c.fechaHora.month, c.fechaHora.day);
+      final d =
+          DateTime(c.startTime.year, c.startTime.month, c.startTime.day);
       if (d == hoy) {
         hoyList.add(c);
       } else if (d == manana) {
@@ -119,21 +142,19 @@ class _Item {
   final bool isHeader;
 }
 
-class _AppointmentCard extends ConsumerWidget {
+class _AppointmentCard extends StatelessWidget {
   const _AppointmentCard({required this.cita});
 
   final Appointment cita;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final cliente = ref.watch(clientByIdProvider(cita.clienteId));
-    final operaria = ref.watch(operariaByIdProvider(cita.operariaId));
-    final hora = DateFormat('HH:mm').format(cita.fechaHora);
+  Widget build(BuildContext context) {
+    final hora = DateFormat('HH:mm').format(cita.startTime);
     final precio = NumberFormat.currency(
       locale: 'es_BO',
       symbol: 'Bs ',
       decimalDigits: 0,
-    ).format(cita.precio);
+    ).format(cita.servicePrice ?? 0);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -171,7 +192,7 @@ class _AppointmentCard extends ConsumerWidget {
               width: 3,
               height: 56,
               decoration: BoxDecoration(
-                color: cita.estado.color,
+                color: cita.status.color,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -181,7 +202,7 @@ class _AppointmentCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    cliente?.nombreCompleto ?? 'Cliente desconocido',
+                    cita.clientName,
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -189,20 +210,20 @@ class _AppointmentCard extends ConsumerWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    cita.servicio,
+                    cita.serviceName ?? 'Sin servicio',
                     style: const TextStyle(fontSize: 13),
                   ),
                   const SizedBox(height: 6),
                   Row(
                     children: [
                       InitialsAvatar(
-                        initials: operaria?.iniciales ?? '?',
+                        initials: cita.professionalInitials,
                         size: 22,
                       ),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          operaria?.nombre ?? '—',
+                          cita.professionalName ?? '—',
                           style: const TextStyle(
                             fontSize: 12,
                             color: Colors.black54,
@@ -222,7 +243,10 @@ class _AppointmentCard extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 8),
-            StatusBadge(label: cita.estado.label, color: cita.estado.color),
+            StatusBadge(
+              label: cita.status.label,
+              color: cita.status.color,
+            ),
           ],
         ),
       ),

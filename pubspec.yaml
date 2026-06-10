@@ -44,6 +44,9 @@ dependencies:
   intl: ^0.20.2
   image_picker: ^1.1.2
 
+  # WhatsApp / external links
+  url_launcher: ^6.3.0
+
   # PDF (Dart puro). El plugin `printing` se reintroduce en Fase 6 (POS):
   # fija AGP 7.3.0 y requiere descargas desde dl.google.com que en esta
   # máquina están bloqueadas.

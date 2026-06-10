@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class AdminTab extends StatelessWidget {
@@ -40,6 +42,15 @@ class AdminTab extends StatelessWidget {
               title: 'Comisiones',
               subtitle: 'Pagos a operarias y saldos',
             ),
+            const SizedBox(height: 10),
+            _ListTileCard(
+              iconBg: const Color(0xFF0D2B1A),
+              iconColor: const Color(0xFF25D366),
+              icon: Icons.chat_rounded,
+              title: 'Mensajes',
+              subtitle: 'WhatsApp y asistente IA',
+              onTap: () => context.push(AppRoutes.mensajes),
+            ),
             const SizedBox(height: 16),
             GridView.count(
               shrinkWrap: true,
@@ -48,29 +59,30 @@ class AdminTab extends StatelessWidget {
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               childAspectRatio: 1.0,
-              children: const [
+              children: [
                 _GridCard(
                   iconBg: AppColors.iconBgOlive,
                   iconColor: AppColors.goldAccent,
                   icon: Icons.spa_outlined,
                   title: 'Servicios',
                   subtitle: 'Técnicas y comisiones',
+                  onTap: () => context.push(AppRoutes.servicios),
                 ),
-                _GridCard(
+                const _GridCard(
                   iconBg: AppColors.iconBgGreen,
                   iconColor: AppColors.onlineGreen,
                   icon: Icons.receipt_long_outlined,
                   title: 'Pagos',
                   subtitle: 'Cobros y métodos',
                 ),
-                _GridCard(
+                const _GridCard(
                   iconBg: AppColors.iconBgTeal,
                   iconColor: AppColors.statusAtendido,
                   icon: Icons.history,
                   title: 'Historial',
                   subtitle: 'Servicios realizados',
                 ),
-                _GridCard(
+                const _GridCard(
                   iconBg: AppColors.iconBgOrange,
                   iconColor: Color(0xFFF97316),
                   icon: Icons.groups_outlined,
@@ -140,6 +152,7 @@ class _ListTileCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.badge,
+    this.onTap,
   });
 
   final Color iconBg;
@@ -148,6 +161,7 @@ class _ListTileCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final Widget? badge;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +210,7 @@ class _ListTileCard extends StatelessWidget {
           color: Color(0xFF4B5563),
           size: 20,
         ),
-        onTap: () {},
+        onTap: onTap,
       ),
     );
   }
@@ -209,6 +223,7 @@ class _GridCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.onTap,
   });
 
   final Color iconBg;
@@ -216,11 +231,12 @@ class _GridCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(

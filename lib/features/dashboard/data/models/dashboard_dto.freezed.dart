@@ -1,0 +1,694 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'dashboard_dto.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+DashboardCardsDto _$DashboardCardsDtoFromJson(Map<String, dynamic> json) {
+  return _DashboardCardsDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$DashboardCardsDto {
+  @JsonKey(name: 'clients_total')
+  int get clientsTotal => throw _privateConstructorUsedError;
+  @JsonKey(name: 'clients_with_activity')
+  int get clientsWithActivity => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointments_total')
+  int get appointmentsTotal => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointments_pending')
+  int get appointmentsPending => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointments_confirmed')
+  int get appointmentsConfirmed => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointments_completed')
+  int get appointmentsCompleted => throw _privateConstructorUsedError;
+  @JsonKey(name: 'appointments_cancelled')
+  int get appointmentsCancelled => throw _privateConstructorUsedError;
+  @JsonKey(name: 'payments_paid_total')
+  double get paymentsPaidTotal => throw _privateConstructorUsedError;
+  @JsonKey(name: 'payments_count')
+  int get paymentsCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'avg_payment')
+  double get avgPayment => throw _privateConstructorUsedError;
+  @JsonKey(name: 'pos_sales_count')
+  int get posSalesCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'active_employees')
+  int get activeEmployees => throw _privateConstructorUsedError;
+  @JsonKey(name: 'services_count')
+  int get servicesCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'products_active_count')
+  int get productsActiveCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'low_stock_items')
+  int get lowStockItems => throw _privateConstructorUsedError;
+
+  /// Serializes this DashboardCardsDto to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of DashboardCardsDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $DashboardCardsDtoCopyWith<DashboardCardsDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DashboardCardsDtoCopyWith<$Res> {
+  factory $DashboardCardsDtoCopyWith(
+          DashboardCardsDto value, $Res Function(DashboardCardsDto) then) =
+      _$DashboardCardsDtoCopyWithImpl<$Res, DashboardCardsDto>;
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'clients_total') int clientsTotal,
+      @JsonKey(name: 'clients_with_activity') int clientsWithActivity,
+      @JsonKey(name: 'appointments_total') int appointmentsTotal,
+      @JsonKey(name: 'appointments_pending') int appointmentsPending,
+      @JsonKey(name: 'appointments_confirmed') int appointmentsConfirmed,
+      @JsonKey(name: 'appointments_completed') int appointmentsCompleted,
+      @JsonKey(name: 'appointments_cancelled') int appointmentsCancelled,
+      @JsonKey(name: 'payments_paid_total') double paymentsPaidTotal,
+      @JsonKey(name: 'payments_count') int paymentsCount,
+      @JsonKey(name: 'avg_payment') double avgPayment,
+      @JsonKey(name: 'pos_sales_count') int posSalesCount,
+      @JsonKey(name: 'active_employees') int activeEmployees,
+      @JsonKey(name: 'services_count') int servicesCount,
+      @JsonKey(name: 'products_active_count') int productsActiveCount,
+      @JsonKey(name: 'low_stock_items') int lowStockItems});
+}
+
+/// @nodoc
+class _$DashboardCardsDtoCopyWithImpl<$Res, $Val extends DashboardCardsDto>
+    implements $DashboardCardsDtoCopyWith<$Res> {
+  _$DashboardCardsDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of DashboardCardsDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? clientsTotal = null,
+    Object? clientsWithActivity = null,
+    Object? appointmentsTotal = null,
+    Object? appointmentsPending = null,
+    Object? appointmentsConfirmed = null,
+    Object? appointmentsCompleted = null,
+    Object? appointmentsCancelled = null,
+    Object? paymentsPaidTotal = null,
+    Object? paymentsCount = null,
+    Object? avgPayment = null,
+    Object? posSalesCount = null,
+    Object? activeEmployees = null,
+    Object? servicesCount = null,
+    Object? productsActiveCount = null,
+    Object? lowStockItems = null,
+  }) {
+    return _then(_value.copyWith(
+      clientsTotal: null == clientsTotal
+          ? _value.clientsTotal
+          : clientsTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      clientsWithActivity: null == clientsWithActivity
+          ? _value.clientsWithActivity
+          : clientsWithActivity // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsTotal: null == appointmentsTotal
+          ? _value.appointmentsTotal
+          : appointmentsTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsPending: null == appointmentsPending
+          ? _value.appointmentsPending
+          : appointmentsPending // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsConfirmed: null == appointmentsConfirmed
+          ? _value.appointmentsConfirmed
+          : appointmentsConfirmed // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsCompleted: null == appointmentsCompleted
+          ? _value.appointmentsCompleted
+          : appointmentsCompleted // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsCancelled: null == appointmentsCancelled
+          ? _value.appointmentsCancelled
+          : appointmentsCancelled // ignore: cast_nullable_to_non_nullable
+              as int,
+      paymentsPaidTotal: null == paymentsPaidTotal
+          ? _value.paymentsPaidTotal
+          : paymentsPaidTotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      paymentsCount: null == paymentsCount
+          ? _value.paymentsCount
+          : paymentsCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      avgPayment: null == avgPayment
+          ? _value.avgPayment
+          : avgPayment // ignore: cast_nullable_to_non_nullable
+              as double,
+      posSalesCount: null == posSalesCount
+          ? _value.posSalesCount
+          : posSalesCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      activeEmployees: null == activeEmployees
+          ? _value.activeEmployees
+          : activeEmployees // ignore: cast_nullable_to_non_nullable
+              as int,
+      servicesCount: null == servicesCount
+          ? _value.servicesCount
+          : servicesCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      productsActiveCount: null == productsActiveCount
+          ? _value.productsActiveCount
+          : productsActiveCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      lowStockItems: null == lowStockItems
+          ? _value.lowStockItems
+          : lowStockItems // ignore: cast_nullable_to_non_nullable
+              as int,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$DashboardCardsDtoImplCopyWith<$Res>
+    implements $DashboardCardsDtoCopyWith<$Res> {
+  factory _$$DashboardCardsDtoImplCopyWith(_$DashboardCardsDtoImpl value,
+          $Res Function(_$DashboardCardsDtoImpl) then) =
+      __$$DashboardCardsDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'clients_total') int clientsTotal,
+      @JsonKey(name: 'clients_with_activity') int clientsWithActivity,
+      @JsonKey(name: 'appointments_total') int appointmentsTotal,
+      @JsonKey(name: 'appointments_pending') int appointmentsPending,
+      @JsonKey(name: 'appointments_confirmed') int appointmentsConfirmed,
+      @JsonKey(name: 'appointments_completed') int appointmentsCompleted,
+      @JsonKey(name: 'appointments_cancelled') int appointmentsCancelled,
+      @JsonKey(name: 'payments_paid_total') double paymentsPaidTotal,
+      @JsonKey(name: 'payments_count') int paymentsCount,
+      @JsonKey(name: 'avg_payment') double avgPayment,
+      @JsonKey(name: 'pos_sales_count') int posSalesCount,
+      @JsonKey(name: 'active_employees') int activeEmployees,
+      @JsonKey(name: 'services_count') int servicesCount,
+      @JsonKey(name: 'products_active_count') int productsActiveCount,
+      @JsonKey(name: 'low_stock_items') int lowStockItems});
+}
+
+/// @nodoc
+class __$$DashboardCardsDtoImplCopyWithImpl<$Res>
+    extends _$DashboardCardsDtoCopyWithImpl<$Res, _$DashboardCardsDtoImpl>
+    implements _$$DashboardCardsDtoImplCopyWith<$Res> {
+  __$$DashboardCardsDtoImplCopyWithImpl(_$DashboardCardsDtoImpl _value,
+      $Res Function(_$DashboardCardsDtoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DashboardCardsDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? clientsTotal = null,
+    Object? clientsWithActivity = null,
+    Object? appointmentsTotal = null,
+    Object? appointmentsPending = null,
+    Object? appointmentsConfirmed = null,
+    Object? appointmentsCompleted = null,
+    Object? appointmentsCancelled = null,
+    Object? paymentsPaidTotal = null,
+    Object? paymentsCount = null,
+    Object? avgPayment = null,
+    Object? posSalesCount = null,
+    Object? activeEmployees = null,
+    Object? servicesCount = null,
+    Object? productsActiveCount = null,
+    Object? lowStockItems = null,
+  }) {
+    return _then(_$DashboardCardsDtoImpl(
+      clientsTotal: null == clientsTotal
+          ? _value.clientsTotal
+          : clientsTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      clientsWithActivity: null == clientsWithActivity
+          ? _value.clientsWithActivity
+          : clientsWithActivity // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsTotal: null == appointmentsTotal
+          ? _value.appointmentsTotal
+          : appointmentsTotal // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsPending: null == appointmentsPending
+          ? _value.appointmentsPending
+          : appointmentsPending // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsConfirmed: null == appointmentsConfirmed
+          ? _value.appointmentsConfirmed
+          : appointmentsConfirmed // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsCompleted: null == appointmentsCompleted
+          ? _value.appointmentsCompleted
+          : appointmentsCompleted // ignore: cast_nullable_to_non_nullable
+              as int,
+      appointmentsCancelled: null == appointmentsCancelled
+          ? _value.appointmentsCancelled
+          : appointmentsCancelled // ignore: cast_nullable_to_non_nullable
+              as int,
+      paymentsPaidTotal: null == paymentsPaidTotal
+          ? _value.paymentsPaidTotal
+          : paymentsPaidTotal // ignore: cast_nullable_to_non_nullable
+              as double,
+      paymentsCount: null == paymentsCount
+          ? _value.paymentsCount
+          : paymentsCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      avgPayment: null == avgPayment
+          ? _value.avgPayment
+          : avgPayment // ignore: cast_nullable_to_non_nullable
+              as double,
+      posSalesCount: null == posSalesCount
+          ? _value.posSalesCount
+          : posSalesCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      activeEmployees: null == activeEmployees
+          ? _value.activeEmployees
+          : activeEmployees // ignore: cast_nullable_to_non_nullable
+              as int,
+      servicesCount: null == servicesCount
+          ? _value.servicesCount
+          : servicesCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      productsActiveCount: null == productsActiveCount
+          ? _value.productsActiveCount
+          : productsActiveCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      lowStockItems: null == lowStockItems
+          ? _value.lowStockItems
+          : lowStockItems // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DashboardCardsDtoImpl implements _DashboardCardsDto {
+  const _$DashboardCardsDtoImpl(
+      {@JsonKey(name: 'clients_total') this.clientsTotal = 0,
+      @JsonKey(name: 'clients_with_activity') this.clientsWithActivity = 0,
+      @JsonKey(name: 'appointments_total') this.appointmentsTotal = 0,
+      @JsonKey(name: 'appointments_pending') this.appointmentsPending = 0,
+      @JsonKey(name: 'appointments_confirmed') this.appointmentsConfirmed = 0,
+      @JsonKey(name: 'appointments_completed') this.appointmentsCompleted = 0,
+      @JsonKey(name: 'appointments_cancelled') this.appointmentsCancelled = 0,
+      @JsonKey(name: 'payments_paid_total') this.paymentsPaidTotal = 0.0,
+      @JsonKey(name: 'payments_count') this.paymentsCount = 0,
+      @JsonKey(name: 'avg_payment') this.avgPayment = 0.0,
+      @JsonKey(name: 'pos_sales_count') this.posSalesCount = 0,
+      @JsonKey(name: 'active_employees') this.activeEmployees = 0,
+      @JsonKey(name: 'services_count') this.servicesCount = 0,
+      @JsonKey(name: 'products_active_count') this.productsActiveCount = 0,
+      @JsonKey(name: 'low_stock_items') this.lowStockItems = 0});
+
+  factory _$DashboardCardsDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DashboardCardsDtoImplFromJson(json);
+
+  @override
+  @JsonKey(name: 'clients_total')
+  final int clientsTotal;
+  @override
+  @JsonKey(name: 'clients_with_activity')
+  final int clientsWithActivity;
+  @override
+  @JsonKey(name: 'appointments_total')
+  final int appointmentsTotal;
+  @override
+  @JsonKey(name: 'appointments_pending')
+  final int appointmentsPending;
+  @override
+  @JsonKey(name: 'appointments_confirmed')
+  final int appointmentsConfirmed;
+  @override
+  @JsonKey(name: 'appointments_completed')
+  final int appointmentsCompleted;
+  @override
+  @JsonKey(name: 'appointments_cancelled')
+  final int appointmentsCancelled;
+  @override
+  @JsonKey(name: 'payments_paid_total')
+  final double paymentsPaidTotal;
+  @override
+  @JsonKey(name: 'payments_count')
+  final int paymentsCount;
+  @override
+  @JsonKey(name: 'avg_payment')
+  final double avgPayment;
+  @override
+  @JsonKey(name: 'pos_sales_count')
+  final int posSalesCount;
+  @override
+  @JsonKey(name: 'active_employees')
+  final int activeEmployees;
+  @override
+  @JsonKey(name: 'services_count')
+  final int servicesCount;
+  @override
+  @JsonKey(name: 'products_active_count')
+  final int productsActiveCount;
+  @override
+  @JsonKey(name: 'low_stock_items')
+  final int lowStockItems;
+
+  @override
+  String toString() {
+    return 'DashboardCardsDto(clientsTotal: $clientsTotal, clientsWithActivity: $clientsWithActivity, appointmentsTotal: $appointmentsTotal, appointmentsPending: $appointmentsPending, appointmentsConfirmed: $appointmentsConfirmed, appointmentsCompleted: $appointmentsCompleted, appointmentsCancelled: $appointmentsCancelled, paymentsPaidTotal: $paymentsPaidTotal, paymentsCount: $paymentsCount, avgPayment: $avgPayment, posSalesCount: $posSalesCount, activeEmployees: $activeEmployees, servicesCount: $servicesCount, productsActiveCount: $productsActiveCount, lowStockItems: $lowStockItems)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DashboardCardsDtoImpl &&
+            (identical(other.clientsTotal, clientsTotal) ||
+                other.clientsTotal == clientsTotal) &&
+            (identical(other.clientsWithActivity, clientsWithActivity) ||
+                other.clientsWithActivity == clientsWithActivity) &&
+            (identical(other.appointmentsTotal, appointmentsTotal) ||
+                other.appointmentsTotal == appointmentsTotal) &&
+            (identical(other.appointmentsPending, appointmentsPending) ||
+                other.appointmentsPending == appointmentsPending) &&
+            (identical(other.appointmentsConfirmed, appointmentsConfirmed) ||
+                other.appointmentsConfirmed == appointmentsConfirmed) &&
+            (identical(other.appointmentsCompleted, appointmentsCompleted) ||
+                other.appointmentsCompleted == appointmentsCompleted) &&
+            (identical(other.appointmentsCancelled, appointmentsCancelled) ||
+                other.appointmentsCancelled == appointmentsCancelled) &&
+            (identical(other.paymentsPaidTotal, paymentsPaidTotal) ||
+                other.paymentsPaidTotal == paymentsPaidTotal) &&
+            (identical(other.paymentsCount, paymentsCount) ||
+                other.paymentsCount == paymentsCount) &&
+            (identical(other.avgPayment, avgPayment) ||
+                other.avgPayment == avgPayment) &&
+            (identical(other.posSalesCount, posSalesCount) ||
+                other.posSalesCount == posSalesCount) &&
+            (identical(other.activeEmployees, activeEmployees) ||
+                other.activeEmployees == activeEmployees) &&
+            (identical(other.servicesCount, servicesCount) ||
+                other.servicesCount == servicesCount) &&
+            (identical(other.productsActiveCount, productsActiveCount) ||
+                other.productsActiveCount == productsActiveCount) &&
+            (identical(other.lowStockItems, lowStockItems) ||
+                other.lowStockItems == lowStockItems));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      clientsTotal,
+      clientsWithActivity,
+      appointmentsTotal,
+      appointmentsPending,
+      appointmentsConfirmed,
+      appointmentsCompleted,
+      appointmentsCancelled,
+      paymentsPaidTotal,
+      paymentsCount,
+      avgPayment,
+      posSalesCount,
+      activeEmployees,
+      servicesCount,
+      productsActiveCount,
+      lowStockItems);
+
+  /// Create a copy of DashboardCardsDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DashboardCardsDtoImplCopyWith<_$DashboardCardsDtoImpl> get copyWith =>
+      __$$DashboardCardsDtoImplCopyWithImpl<_$DashboardCardsDtoImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DashboardCardsDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _DashboardCardsDto implements DashboardCardsDto {
+  const factory _DashboardCardsDto(
+      {@JsonKey(name: 'clients_total') final int clientsTotal,
+      @JsonKey(name: 'clients_with_activity') final int clientsWithActivity,
+      @JsonKey(name: 'appointments_total') final int appointmentsTotal,
+      @JsonKey(name: 'appointments_pending') final int appointmentsPending,
+      @JsonKey(name: 'appointments_confirmed') final int appointmentsConfirmed,
+      @JsonKey(name: 'appointments_completed') final int appointmentsCompleted,
+      @JsonKey(name: 'appointments_cancelled') final int appointmentsCancelled,
+      @JsonKey(name: 'payments_paid_total') final double paymentsPaidTotal,
+      @JsonKey(name: 'payments_count') final int paymentsCount,
+      @JsonKey(name: 'avg_payment') final double avgPayment,
+      @JsonKey(name: 'pos_sales_count') final int posSalesCount,
+      @JsonKey(name: 'active_employees') final int activeEmployees,
+      @JsonKey(name: 'services_count') final int servicesCount,
+      @JsonKey(name: 'products_active_count') final int productsActiveCount,
+      @JsonKey(name: 'low_stock_items')
+      final int lowStockItems}) = _$DashboardCardsDtoImpl;
+
+  factory _DashboardCardsDto.fromJson(Map<String, dynamic> json) =
+      _$DashboardCardsDtoImpl.fromJson;
+
+  @override
+  @JsonKey(name: 'clients_total')
+  int get clientsTotal;
+  @override
+  @JsonKey(name: 'clients_with_activity')
+  int get clientsWithActivity;
+  @override
+  @JsonKey(name: 'appointments_total')
+  int get appointmentsTotal;
+  @override
+  @JsonKey(name: 'appointments_pending')
+  int get appointmentsPending;
+  @override
+  @JsonKey(name: 'appointments_confirmed')
+  int get appointmentsConfirmed;
+  @override
+  @JsonKey(name: 'appointments_completed')
+  int get appointmentsCompleted;
+  @override
+  @JsonKey(name: 'appointments_cancelled')
+  int get appointmentsCancelled;
+  @override
+  @JsonKey(name: 'payments_paid_total')
+  double get paymentsPaidTotal;
+  @override
+  @JsonKey(name: 'payments_count')
+  int get paymentsCount;
+  @override
+  @JsonKey(name: 'avg_payment')
+  double get avgPayment;
+  @override
+  @JsonKey(name: 'pos_sales_count')
+  int get posSalesCount;
+  @override
+  @JsonKey(name: 'active_employees')
+  int get activeEmployees;
+  @override
+  @JsonKey(name: 'services_count')
+  int get servicesCount;
+  @override
+  @JsonKey(name: 'products_active_count')
+  int get productsActiveCount;
+  @override
+  @JsonKey(name: 'low_stock_items')
+  int get lowStockItems;
+
+  /// Create a copy of DashboardCardsDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DashboardCardsDtoImplCopyWith<_$DashboardCardsDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+DashboardOverviewDto _$DashboardOverviewDtoFromJson(Map<String, dynamic> json) {
+  return _DashboardOverviewDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$DashboardOverviewDto {
+  DashboardCardsDto get cards => throw _privateConstructorUsedError;
+
+  /// Serializes this DashboardOverviewDto to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of DashboardOverviewDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $DashboardOverviewDtoCopyWith<DashboardOverviewDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DashboardOverviewDtoCopyWith<$Res> {
+  factory $DashboardOverviewDtoCopyWith(DashboardOverviewDto value,
+          $Res Function(DashboardOverviewDto) then) =
+      _$DashboardOverviewDtoCopyWithImpl<$Res, DashboardOverviewDto>;
+  @useResult
+  $Res call({DashboardCardsDto cards});
+
+  $DashboardCardsDtoCopyWith<$Res> get cards;
+}
+
+/// @nodoc
+class _$DashboardOverviewDtoCopyWithImpl<$Res,
+        $Val extends DashboardOverviewDto>
+    implements $DashboardOverviewDtoCopyWith<$Res> {
+  _$DashboardOverviewDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of DashboardOverviewDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? cards = null,
+  }) {
+    return _then(_value.copyWith(
+      cards: null == cards
+          ? _value.cards
+          : cards // ignore: cast_nullable_to_non_nullable
+              as DashboardCardsDto,
+    ) as $Val);
+  }
+
+  /// Create a copy of DashboardOverviewDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DashboardCardsDtoCopyWith<$Res> get cards {
+    return $DashboardCardsDtoCopyWith<$Res>(_value.cards, (value) {
+      return _then(_value.copyWith(cards: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$DashboardOverviewDtoImplCopyWith<$Res>
+    implements $DashboardOverviewDtoCopyWith<$Res> {
+  factory _$$DashboardOverviewDtoImplCopyWith(_$DashboardOverviewDtoImpl value,
+          $Res Function(_$DashboardOverviewDtoImpl) then) =
+      __$$DashboardOverviewDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({DashboardCardsDto cards});
+
+  @override
+  $DashboardCardsDtoCopyWith<$Res> get cards;
+}
+
+/// @nodoc
+class __$$DashboardOverviewDtoImplCopyWithImpl<$Res>
+    extends _$DashboardOverviewDtoCopyWithImpl<$Res, _$DashboardOverviewDtoImpl>
+    implements _$$DashboardOverviewDtoImplCopyWith<$Res> {
+  __$$DashboardOverviewDtoImplCopyWithImpl(_$DashboardOverviewDtoImpl _value,
+      $Res Function(_$DashboardOverviewDtoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of DashboardOverviewDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? cards = null,
+  }) {
+    return _then(_$DashboardOverviewDtoImpl(
+      cards: null == cards
+          ? _value.cards
+          : cards // ignore: cast_nullable_to_non_nullable
+              as DashboardCardsDto,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DashboardOverviewDtoImpl implements _DashboardOverviewDto {
+  const _$DashboardOverviewDtoImpl({required this.cards});
+
+  factory _$DashboardOverviewDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DashboardOverviewDtoImplFromJson(json);
+
+  @override
+  final DashboardCardsDto cards;
+
+  @override
+  String toString() {
+    return 'DashboardOverviewDto(cards: $cards)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DashboardOverviewDtoImpl &&
+            (identical(other.cards, cards) || other.cards == cards));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, cards);
+
+  /// Create a copy of DashboardOverviewDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DashboardOverviewDtoImplCopyWith<_$DashboardOverviewDtoImpl>
+      get copyWith =>
+          __$$DashboardOverviewDtoImplCopyWithImpl<_$DashboardOverviewDtoImpl>(
+              this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DashboardOverviewDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _DashboardOverviewDto implements DashboardOverviewDto {
+  const factory _DashboardOverviewDto(
+      {required final DashboardCardsDto cards}) = _$DashboardOverviewDtoImpl;
+
+  factory _DashboardOverviewDto.fromJson(Map<String, dynamic> json) =
+      _$DashboardOverviewDtoImpl.fromJson;
+
+  @override
+  DashboardCardsDto get cards;
+
+  /// Create a copy of DashboardOverviewDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DashboardOverviewDtoImplCopyWith<_$DashboardOverviewDtoImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}

@@ -7,7 +7,6 @@ const List<Service> kMockServices = [
     categoria: 'Pestañas',
     precio: 220,
     duracionMinutos: 90,
-    activo: true,
     descripcion: 'Aplicación pelo a pelo de pestañas individuales.',
   ),
   Service(
@@ -16,7 +15,6 @@ const List<Service> kMockServices = [
     categoria: 'Pestañas',
     precio: 350,
     duracionMinutos: 120,
-    activo: true,
     descripcion: 'Volumen denso con abanicos hechos a mano.',
   ),
   Service(
@@ -25,7 +23,6 @@ const List<Service> kMockServices = [
     categoria: 'Pestañas',
     precio: 280,
     duracionMinutos: 105,
-    activo: true,
   ),
   Service(
     id: 4,
@@ -33,7 +30,6 @@ const List<Service> kMockServices = [
     categoria: 'Pestañas',
     precio: 180,
     duracionMinutos: 75,
-    activo: true,
     descripcion: 'Hasta 3 semanas desde la última aplicación.',
   ),
   Service(
@@ -42,7 +38,6 @@ const List<Service> kMockServices = [
     categoria: 'Pestañas',
     precio: 200,
     duracionMinutos: 60,
-    activo: true,
   ),
   Service(
     id: 6,
@@ -50,7 +45,6 @@ const List<Service> kMockServices = [
     categoria: 'Cejas',
     precio: 80,
     duracionMinutos: 30,
-    activo: true,
   ),
   Service(
     id: 7,
@@ -58,7 +52,6 @@ const List<Service> kMockServices = [
     categoria: 'Cejas',
     precio: 70,
     duracionMinutos: 30,
-    activo: true,
   ),
   Service(
     id: 8,
@@ -66,7 +59,6 @@ const List<Service> kMockServices = [
     categoria: 'Cejas',
     precio: 120,
     duracionMinutos: 45,
-    activo: true,
   ),
   Service(
     id: 9,
@@ -74,7 +66,6 @@ const List<Service> kMockServices = [
     categoria: 'Cejas',
     precio: 850,
     duracionMinutos: 150,
-    activo: true,
     descripcion: 'Incluye retoque a los 30 días.',
   ),
   Service(
@@ -83,7 +74,6 @@ const List<Service> kMockServices = [
     categoria: 'Uñas',
     precio: 90,
     duracionMinutos: 45,
-    activo: false,
     descripcion: 'Próximamente.',
   ),
 ];

@@ -11,6 +11,7 @@ class AppRoutes {
   // Privadas (shell)
   static const String shell = '/';
   static const String dashboard = '/dashboard';
+  static const String mensajes = '/mensajes';
   static const String servicios = '/servicios';
   static const String ventas = '/ventas';
   static const String chatIa = '/chat/ia';

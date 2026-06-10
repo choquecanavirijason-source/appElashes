@@ -11,7 +11,7 @@ class Env {
   }
 
   static String get apiBaseUrl {
-    final fromEnv = dotenv.maybeGet('API_BASE_URL');
+    final fromEnv = dotenv.maybeGet('API_URL');
     if (fromEnv != null && fromEnv.isNotEmpty) return fromEnv;
     if (kIsWeb) return 'http://localhost:8000';
     if (Platform.isAndroid) return 'http://10.0.2.2:8000';

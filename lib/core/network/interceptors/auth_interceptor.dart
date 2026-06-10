@@ -36,7 +36,9 @@ class AuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.response?.statusCode == 401) {
+    // No disparar markSignedOut para el endpoint de login (skipAuth: true)
+    final isSkipAuth = err.requestOptions.extra['skipAuth'] == true;
+    if (err.response?.statusCode == 401 && !isSkipAuth) {
       await storage.clearToken();
       await Future.sync(onSessionExpired);
     }

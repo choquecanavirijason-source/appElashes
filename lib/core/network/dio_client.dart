@@ -24,7 +24,6 @@ final dioProvider = Provider<Dio>((ref) {
       sendTimeout: Env.sendTimeout,
       contentType: 'application/json',
       responseType: ResponseType.json,
-      validateStatus: (status) => status != null && status < 500,
     ),
   )..interceptors.addAll([
       AuthInterceptor(

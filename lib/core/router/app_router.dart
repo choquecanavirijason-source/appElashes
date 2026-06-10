@@ -6,6 +6,7 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/mensajes/domain/entities/message.dart';
 import '../../features/mensajes/presentation/screens/chat_screen.dart';
+import '../../features/mensajes/presentation/screens/mensajes_tab.dart';
 import '../../features/servicios/presentation/screens/servicios_screen.dart';
 import '../../features/shell/presentation/screens/app_shell.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
@@ -17,9 +18,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   final authController = ref.watch(authStateProvider.notifier);
 
   return GoRouter(
-    // Auth desactivada: arrancamos directamente en /login.
-    // Restaurar a AppRoutes.splash cuando se reactive la autenticación.
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: false,
     refreshListenable: authController,
     redirect: (context, state) =>
@@ -62,6 +61,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           final id = int.parse(state.pathParameters['clienteId']!);
           return ChatScreen(clienteId: id, channel: MessageChannel.whatsapp);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.mensajes,
+        builder: (_, __) => const MensajesScreen(),
       ),
     ],
   );

@@ -4,115 +4,150 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/presentation/atoms/initials_avatar.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../citas/domain/entities/appointment.dart';
 import '../../../citas/presentation/providers/appointments_provider.dart';
-import '../../../clientes/presentation/providers/clients_provider.dart';
-import '../../../mensajes/presentation/providers/messages_provider.dart';
-import '../../../operarias/presentation/providers/operarias_provider.dart';
+import '../../../dashboard/domain/entities/dashboard_overview.dart';
+import '../../../dashboard/presentation/providers/dashboard_overview_provider.dart';
 
 class InicioTab extends ConsumerWidget {
   const InicioTab({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final clientes = ref.watch(clientsProvider);
-    final operarias = ref.watch(operariasProvider);
     final citasHoy = ref.watch(citasHoyProvider);
     final proximas = ref.watch(proximasCitasProvider);
-    final hilos = ref.watch(whatsappThreadsProvider);
+    final overviewAsync = ref.watch(dashboardOverviewProvider);
 
-    final enLinea = operarias.where((o) => o.enLinea).length;
-    final mensajesPendientes = hilos.where((t) {
-      if (t.mensajes.isEmpty) return false;
-      return t.mensajes.last.sender.name == 'client';
-    }).length;
+    Future<void> onRefresh() async {
+      await ref.read(dashboardOverviewProvider.notifier).refresh();
+      ref.invalidate(appointmentsListProvider);
+    }
 
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-          children: [
-            const SizedBox(height: 8),
-            const Text(
-              'Inicio',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          color: AppColors.brandAccent,
+          backgroundColor: AppColors.darkCard,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+            children: [
+              const SizedBox(height: 8),
+              const Text(
+                'Inicio',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            _HeroCard(citasHoy: citasHoy.length),
-            const SizedBox(height: 24),
-            const _SectionLabel('RESUMEN'),
-            const SizedBox(height: 12),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 1.4,
-              children: [
-                _KpiCard(
+              const SizedBox(height: 20),
+              _HeroCard(citasHoy: citasHoy.length),
+              const SizedBox(height: 24),
+              const _SectionLabel('RESUMEN'),
+              const SizedBox(height: 12),
+              overviewAsync.when(
+                loading: () => _KpiGrid(
+                  citasHoy: citasHoy.length,
+                  overview: DashboardOverview.empty,
+                  isLoading: true,
+                ),
+                error: (_, __) => _KpiGrid(
+                  citasHoy: citasHoy.length,
+                  overview: DashboardOverview.empty,
+                ),
+                data: (overview) => _KpiGrid(
+                  citasHoy: citasHoy.length,
+                  overview: overview,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  const Expanded(child: _SectionLabel('PRÓXIMAS CITAS')),
+                  if (proximas.isNotEmpty)
+                    Text(
+                      '${proximas.length}',
+                      style: const TextStyle(
+                        color: Color(0xFF6B7280),
+                        fontSize: 12,
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (proximas.isEmpty)
+                const _EmptyCard(
                   icon: Icons.calendar_today_outlined,
-                  iconBg: AppColors.iconBgTeal,
-                  iconColor: AppColors.statusAtendido,
-                  value: '${citasHoy.length}',
-                  label: 'Citas hoy',
-                ),
-                _KpiCard(
-                  icon: Icons.people_outline,
-                  iconBg: AppColors.iconBgGreen,
-                  iconColor: AppColors.onlineGreen,
-                  value: '${clientes.length}',
-                  label: 'Clientas',
-                ),
-                _KpiCard(
-                  icon: Icons.groups_outlined,
-                  iconBg: AppColors.iconBgAmber,
-                  iconColor: AppColors.goldAccent,
-                  value: '$enLinea',
-                  label: 'En línea',
-                ),
-                _KpiCard(
-                  icon: Icons.chat_bubble_outline,
-                  iconBg: AppColors.iconBgOrange,
-                  iconColor: const Color(0xFFF97316),
-                  value: '$mensajesPendientes',
-                  label: 'Mensajes',
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const Expanded(child: _SectionLabel('PRÓXIMAS CITAS')),
-                if (proximas.isNotEmpty)
-                  Text(
-                    '${proximas.length}',
-                    style: const TextStyle(
-                      color: Color(0xFF6B7280),
-                      fontSize: 12,
+                  message: 'No hay citas programadas.',
+                )
+              else
+                ...proximas.take(5).map(
+                      (cita) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _CitaCard(citaId: cita.id),
+                      ),
                     ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            if (proximas.isEmpty)
-              const _EmptyCard(
-                icon: Icons.calendar_today_outlined,
-                message: 'No hay citas programadas.',
-              )
-            else
-              ...proximas.take(5).map(
-                    (cita) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: _CitaCard(citaId: cita.id),
-                    ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+// ─── KPI grid ────────────────────────────────────────────────────────────────
+
+class _KpiGrid extends StatelessWidget {
+  const _KpiGrid({
+    required this.citasHoy,
+    required this.overview,
+    this.isLoading = false,
+  });
+
+  final int citasHoy;
+  final DashboardOverview overview;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: 1.15,
+      children: [
+        _KpiCard(
+          icon: Icons.calendar_today_outlined,
+          iconBg: AppColors.iconBgTeal,
+          iconColor: AppColors.statusAtendido,
+          value: isLoading ? '—' : '$citasHoy',
+          label: 'Citas hoy',
+        ),
+        _KpiCard(
+          icon: Icons.people_outline,
+          iconBg: AppColors.iconBgGreen,
+          iconColor: AppColors.onlineGreen,
+          value: isLoading ? '—' : '${overview.clientsTotal}',
+          label: 'Clientas',
+        ),
+        _KpiCard(
+          icon: Icons.groups_outlined,
+          iconBg: AppColors.iconBgAmber,
+          iconColor: AppColors.goldAccent,
+          value: isLoading ? '—' : '${overview.activeEmployees}',
+          label: 'Equipo activo',
+        ),
+        _KpiCard(
+          icon: Icons.pending_actions_outlined,
+          iconBg: AppColors.iconBgOrange,
+          iconColor: const Color(0xFFF97316),
+          value: isLoading ? '—' : '${overview.appointmentsPending}',
+          label: 'Pendientes',
+        ),
+      ],
     );
   }
 }
@@ -222,7 +257,7 @@ class _KpiCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.darkCard,
         borderRadius: BorderRadius.circular(14),
@@ -230,23 +265,24 @@ class _KpiCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 38,
-            height: 38,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: iconBg,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: iconColor, size: 18),
           ),
-          const Spacer(),
+          const SizedBox(height: 10),
           Text(
             value,
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontSize: 28,
+              fontSize: 26,
             ),
           ),
           const SizedBox(height: 2),
@@ -270,16 +306,25 @@ class _CitaCard extends ConsumerWidget {
 
   final int citaId;
 
+  String _initials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name.substring(0, name.length >= 2 ? 2 : 1).toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final citas = ref.watch(appointmentsProvider);
-    final cita = citas.firstWhere((c) => c.id == citaId);
-    final cliente = ref.watch(clientByIdProvider(cita.clienteId));
+    final citas =
+        ref.watch(appointmentsListProvider).valueOrNull ?? <Appointment>[];
+    final citaOrNull = citas.where((c) => c.id == citaId).firstOrNull;
+    if (citaOrNull == null) return const SizedBox.shrink();
+    final cita = citaOrNull;
 
-    final clienteNombre = cliente?.nombreCompleto ?? 'Cliente';
-    final iniciales = cliente?.iniciales ?? '??';
-    final hora = DateFormat('HH:mm').format(cita.fechaHora);
-    final dia = DateFormat('EEE d MMM', 'es').format(cita.fechaHora);
+    final iniciales = _initials(cita.clientName);
+    final hora = DateFormat('HH:mm').format(cita.startTime);
+    final dia = DateFormat('EEE d MMM', 'es').format(cita.startTime);
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -301,7 +346,7 @@ class _CitaCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  clienteNombre,
+                  cita.clientName,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -310,7 +355,7 @@ class _CitaCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  cita.servicio,
+                  cita.serviceName ?? '—',
                   style: const TextStyle(
                     color: Color(0xFF6B7280),
                     fontSize: 12,
@@ -318,8 +363,8 @@ class _CitaCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: 6),
                 _StatusPill(
-                  label: cita.estado.label,
-                  color: cita.estado.color,
+                  label: cita.status.label,
+                  color: cita.status.color,
                 ),
               ],
             ),

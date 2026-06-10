@@ -1,7 +1,11 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/error/api_exception.dart';
 import '../../../../core/presentation/atoms/pill_button.dart';
+import '../../data/models/service_dto.dart';
 import '../providers/services_provider.dart';
 
 class ServiceFormSheet extends ConsumerStatefulWidget {
@@ -26,10 +30,7 @@ class _ServiceFormSheetState extends ConsumerState<ServiceFormSheet> {
   final _precio = TextEditingController(text: '200');
   final _duracion = TextEditingController(text: '60');
   final _descripcion = TextEditingController();
-  String _categoria = 'Pestañas';
-  bool _activo = true;
-
-  static const _categorias = ['Pestañas', 'Cejas', 'Uñas', 'Otros'];
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -40,25 +41,54 @@ class _ServiceFormSheetState extends ConsumerState<ServiceFormSheet> {
     super.dispose();
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    ref.read(servicesProvider.notifier).add(
-          nombre: _nombre.text,
-          categoria: _categoria,
-          precio: double.parse(_precio.text),
-          duracionMinutos: int.parse(_duracion.text),
-          descripcion: _descripcion.text,
-          activo: _activo,
-        );
-    Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Servicio "${_nombre.text}" agregado')),
+
+    setState(() => _isLoading = true);
+
+    final descVal = _descripcion.text.trim();
+    final input = ServiceCreateDto(
+      name: _nombre.text.trim(),
+      durationMinutes: int.parse(_duracion.text.trim()),
+      price: double.parse(_precio.text.trim()),
+      description: descVal.isEmpty ? null : descVal,
     );
+
+    try {
+      await ref.read(servicesListProvider.notifier).createService(input);
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Servicio "${input.name}" agregado')),
+        );
+      }
+    } on ApiException catch (e) {
+      developer.log('Error al crear servicio', name: 'servicios', error: e);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } catch (e, st) {
+      developer.log(
+        'Error inesperado al crear servicio',
+        name: 'servicios',
+        error: e,
+        stackTrace: st,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error inesperado. Intenta de nuevo.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
+
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + viewInsets),
       child: SingleChildScrollView(
@@ -76,18 +106,10 @@ class _ServiceFormSheetState extends ConsumerState<ServiceFormSheet> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _nombre,
-                decoration: const InputDecoration(labelText: 'Nombre'),
+                textCapitalization: TextCapitalization.sentences,
+                decoration: const InputDecoration(labelText: 'Nombre *'),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Requerido' : null,
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: _categoria,
-                decoration: const InputDecoration(labelText: 'Categoría'),
-                items: _categorias
-                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                    .toList(),
-                onChanged: (v) => setState(() => _categoria = v ?? _categoria),
+                    v == null || v.trim().length < 2 ? 'Mínimo 2 caracteres' : null,
               ),
               const SizedBox(height: 12),
               Row(
@@ -96,9 +118,7 @@ class _ServiceFormSheetState extends ConsumerState<ServiceFormSheet> {
                     child: TextFormField(
                       controller: _precio,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Precio (Bs)',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Precio (Bs) *'),
                       validator: (v) {
                         final n = double.tryParse(v ?? '');
                         if (n == null || n < 0) return 'Inválido';
@@ -111,9 +131,7 @@ class _ServiceFormSheetState extends ConsumerState<ServiceFormSheet> {
                     child: TextFormField(
                       controller: _duracion,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Duración (min)',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Duración (min) *'),
                       validator: (v) {
                         final n = int.tryParse(v ?? '');
                         if (n == null || n <= 0) return '> 0';
@@ -131,16 +149,10 @@ class _ServiceFormSheetState extends ConsumerState<ServiceFormSheet> {
                   labelText: 'Descripción (opcional)',
                 ),
               ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Activo'),
-                value: _activo,
-                onChanged: (v) => setState(() => _activo = v),
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 20),
               PillButton(
-                label: 'Agregar servicio',
-                onPressed: _onSubmit,
+                label: _isLoading ? 'Guardando…' : 'Agregar servicio',
+                onPressed: _isLoading ? null : _onSubmit,
                 height: 52,
               ),
             ],

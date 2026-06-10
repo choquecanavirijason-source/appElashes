@@ -1,10 +1,15 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/error/api_exception.dart';
 import '../../../../core/presentation/atoms/pill_button.dart';
+import '../../../../core/storage/prefs_storage.dart';
 import '../../../clientes/presentation/providers/clients_provider.dart';
 import '../../../operarias/presentation/providers/operarias_provider.dart';
+import '../../data/models/appointment_dto.dart';
 import '../providers/appointments_provider.dart';
 
 class AppointmentFormSheet extends ConsumerStatefulWidget {
@@ -26,22 +31,17 @@ class AppointmentFormSheet extends ConsumerStatefulWidget {
 
 class _AppointmentFormSheetState extends ConsumerState<AppointmentFormSheet> {
   final _formKey = GlobalKey<FormState>();
-  final _servicio = TextEditingController(text: 'Pestañas clásicas');
-  final _precio = TextEditingController(text: '220');
   final _duracion = TextEditingController(text: '90');
-  final _notas = TextEditingController();
 
   int? _clienteId;
   int? _operariaId;
   DateTime _fecha = DateTime.now().add(const Duration(days: 1));
   TimeOfDay _hora = const TimeOfDay(hour: 10, minute: 0);
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    _servicio.dispose();
-    _precio.dispose();
     _duracion.dispose();
-    _notas.dispose();
     super.dispose();
   }
 
@@ -61,40 +61,76 @@ class _AppointmentFormSheetState extends ConsumerState<AppointmentFormSheet> {
     if (picked != null) setState(() => _hora = picked);
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_clienteId == null || _operariaId == null) {
+    if (_clienteId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona cliente y operaria')),
+        const SnackBar(content: Text('Selecciona un cliente')),
       );
       return;
     }
-    final fechaHora = DateTime(
+
+    setState(() => _isLoading = true);
+
+    final startTime = DateTime(
       _fecha.year,
       _fecha.month,
       _fecha.day,
       _hora.hour,
       _hora.minute,
     );
-    ref.read(appointmentsProvider.notifier).add(
-          clienteId: _clienteId!,
-          operariaId: _operariaId!,
-          servicio: _servicio.text,
-          fechaHora: fechaHora,
-          duracionMinutos: int.parse(_duracion.text),
-          precio: double.parse(_precio.text),
-          notas: _notas.text,
-        );
-    Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Cita agendada')),
+    final durMinutes = int.parse(_duracion.text);
+    final endTime = startTime.add(Duration(minutes: durMinutes));
+    final branchId = ref.read(prefsStorageProvider).selectedBranchId;
+
+    final input = AppointmentCreateDto(
+      clientId: _clienteId!,
+      professionalId: _operariaId,
+      branchId: branchId,
+      startTime: startTime,
+      endTime: endTime,
     );
+
+    try {
+      await ref
+          .read(appointmentsListProvider.notifier)
+          .createAppointment(input);
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cita agendada')),
+        );
+      }
+    } on ApiException catch (e) {
+      developer.log('Error al crear cita', name: 'citas', error: e);
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } catch (e, st) {
+      developer.log(
+        'Error inesperado al crear cita',
+        name: 'citas',
+        error: e,
+        stackTrace: st,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error inesperado. Intenta de nuevo.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final clientes = ref.watch(clientsProvider);
+    // Real clients from backend
+    final clientsAsync = ref.watch(clientsListProvider);
+    // Operarias still from mock (pending step 5)
     final operarias = ref.watch(operariasProvider);
+
     final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
     final fechaLabel = DateFormat("d 'de' MMMM yyyy", 'es').format(_fecha);
     final horaLabel = _hora.format(context);
@@ -114,21 +150,32 @@ class _AppointmentFormSheetState extends ConsumerState<AppointmentFormSheet> {
                     ),
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<int>(
-                initialValue: _clienteId,
-                decoration: const InputDecoration(labelText: 'Cliente'),
-                items: clientes
-                    .map(
-                      (c) => DropdownMenuItem(
-                        value: c.id,
-                        child: Text(c.nombreCompleto),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (v) => setState(() => _clienteId = v),
-                validator: (v) => v == null ? 'Selecciona un cliente' : null,
+              // Client dropdown — from real backend
+              clientsAsync.when(
+                loading: () => const LinearProgressIndicator(),
+                error: (e, _) => Text(
+                  'Error al cargar clientes',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                data: (clientes) => DropdownButtonFormField<int>(
+                  initialValue: _clienteId,
+                  decoration: const InputDecoration(labelText: 'Cliente *'),
+                  items: clientes
+                      .map(
+                        (c) => DropdownMenuItem(
+                          value: c.id,
+                          child: Text(c.nombreCompleto),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) => setState(() => _clienteId = v),
+                  validator: (v) => v == null ? 'Selecciona un cliente' : null,
+                ),
               ),
               const SizedBox(height: 12),
+              // Operaria dropdown — still mock until step 5
               DropdownButtonFormField<int>(
                 initialValue: _operariaId,
                 decoration: const InputDecoration(labelText: 'Operaria'),
@@ -145,15 +192,6 @@ class _AppointmentFormSheetState extends ConsumerState<AppointmentFormSheet> {
                     )
                     .toList(),
                 onChanged: (v) => setState(() => _operariaId = v),
-                validator: (v) =>
-                    v == null ? 'Selecciona una operaria' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _servicio,
-                decoration: const InputDecoration(labelText: 'Servicio'),
-                validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Requerido' : null,
               ),
               const SizedBox(height: 12),
               Row(
@@ -179,49 +217,20 @@ class _AppointmentFormSheetState extends ConsumerState<AppointmentFormSheet> {
                 ],
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _duracion,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Duración (min)',
-                      ),
-                      validator: (v) {
-                        final n = int.tryParse(v ?? '');
-                        if (n == null || n <= 0) return '> 0';
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _precio,
-                      keyboardType: TextInputType.number,
-                      decoration:
-                          const InputDecoration(labelText: 'Precio (Bs)'),
-                      validator: (v) {
-                        final n = double.tryParse(v ?? '');
-                        if (n == null || n < 0) return 'Inválido';
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
               TextFormField(
-                controller: _notas,
-                maxLines: 2,
-                decoration:
-                    const InputDecoration(labelText: 'Notas (opcional)'),
+                controller: _duracion,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Duración (min)'),
+                validator: (v) {
+                  final n = int.tryParse(v ?? '');
+                  if (n == null || n <= 0) return '> 0';
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               PillButton(
-                label: 'Agendar cita',
-                onPressed: _onSubmit,
+                label: _isLoading ? 'Guardando…' : 'Agendar cita',
+                onPressed: _isLoading ? null : _onSubmit,
                 height: 52,
               ),
             ],

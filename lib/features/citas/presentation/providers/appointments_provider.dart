@@ -1,66 +1,52 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../shared/data/mock_appointments.dart';
-import '../../../../shared/enums/appointment_status.dart';
+import '../../../../core/storage/prefs_storage.dart';
+import '../../data/citas_repository_impl.dart';
+import '../../data/models/appointment_dto.dart';
 import '../../domain/entities/appointment.dart';
 
-class AppointmentsNotifier extends Notifier<List<Appointment>> {
+class AppointmentsListNotifier
+    extends AutoDisposeAsyncNotifier<List<Appointment>> {
   @override
-  List<Appointment> build() {
-    final initial = buildMockAppointments()
-      ..sort((a, b) => a.fechaHora.compareTo(b.fechaHora));
-    return initial;
+  Future<List<Appointment>> build() async {
+    final branchId = ref.watch(prefsStorageProvider).selectedBranchId;
+    return ref.read(citasRepositoryProvider).list(branchId: branchId);
   }
 
-  void add({
-    required int clienteId,
-    required int operariaId,
-    required String servicio,
-    required DateTime fechaHora,
-    required int duracionMinutos,
-    required double precio,
-    String? notas,
-  }) {
-    final nextId = state.isEmpty
-        ? 1
-        : (state.map((a) => a.id).reduce((a, b) => a > b ? a : b) + 1);
-    final cita = Appointment(
-      id: nextId,
-      clienteId: clienteId,
-      operariaId: operariaId,
-      servicio: servicio.trim(),
-      fechaHora: fechaHora,
-      duracionMinutos: duracionMinutos,
-      precio: precio,
-      estado: AppointmentStatus.reserva,
-      notas: notas?.trim().isEmpty ?? true ? null : notas!.trim(),
-    );
-    state = [...state, cita]
-      ..sort((a, b) => a.fechaHora.compareTo(b.fechaHora));
+  Future<void> createAppointment(AppointmentCreateDto input) async {
+    await ref.read(citasRepositoryProvider).create(input);
+    ref.invalidateSelf();
   }
 
-  void cambiarEstado(int id, AppointmentStatus nuevoEstado) {
-    state = [
-      for (final a in state)
-        if (a.id == id) a.copyWith(estado: nuevoEstado) else a,
-    ];
+  Future<void> editAppointment(int id, AppointmentUpdateDto input) async {
+    await ref.read(citasRepositoryProvider).update(id, input);
+    ref.invalidateSelf();
+  }
+
+  Future<void> removeAppointment(int id) async {
+    await ref.read(citasRepositoryProvider).delete(id);
+    ref.invalidateSelf();
   }
 }
 
-final appointmentsProvider =
-    NotifierProvider<AppointmentsNotifier, List<Appointment>>(
-  AppointmentsNotifier.new,
+final appointmentsListProvider = AutoDisposeAsyncNotifierProvider<
+    AppointmentsListNotifier, List<Appointment>>(
+  AppointmentsListNotifier.new,
 );
 
-/// Citas de hoy ordenadas por hora.
+// ── Proveedores legacy — se eliminan cuando operarias se migre al backend ──
+
+/// Citas de hoy (derivado del provider real, solo disponible cuando data está cargada).
 final citasHoyProvider = Provider<List<Appointment>>((ref) {
-  final all = ref.watch(appointmentsProvider);
+  final all = ref.watch(appointmentsListProvider).valueOrNull ?? [];
   return all.where((c) => c.esHoy).toList();
 });
 
-/// Próximas citas (futuras incluyendo hoy).
+/// Próximas citas futuras (incluyendo hoy).
 final proximasCitasProvider = Provider<List<Appointment>>((ref) {
-  final all = ref.watch(appointmentsProvider);
+  final all = ref.watch(appointmentsListProvider).valueOrNull ?? [];
   final now = DateTime.now();
-  return all.where((c) => c.fechaHora.isAfter(now)).toList();
+  return all.where((c) => c.startTime.isAfter(now)).toList();
 });

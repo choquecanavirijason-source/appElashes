@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/presentation/atoms/initials_avatar.dart';
+import '../../../../core/services/whatsapp_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../clientes/presentation/providers/clients_provider.dart';
 import '../../domain/entities/message.dart';
@@ -125,7 +126,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     subtituloPantalla,
                     style: const TextStyle(
                       fontSize: 11,
-                      color: Colors.black54,
+                      color: Color(0xFF9CA3AF),
                     ),
                   ),
                 ],
@@ -133,6 +134,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
           ],
         ),
+        actions: isAi
+            ? null
+            : [
+                IconButton(
+                  icon: const Icon(
+                    Icons.chat_rounded,
+                    color: Color(0xFF25D366),
+                  ),
+                  tooltip: 'Plantillas WhatsApp',
+                  onPressed: () => WhatsAppService.mostrarPlantillas(
+                    context: context,
+                    telefono: cliente?.telefono ?? '',
+                    nombreCliente: tituloPantalla,
+                  ),
+                ),
+              ],
       ),
       body: Column(
         children: [

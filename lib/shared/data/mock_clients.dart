@@ -1,4 +1,5 @@
 import '../../features/clientes/domain/entities/client.dart';
+import '../enums/client_status.dart';
 
 const List<Client> kMockClients = [
   Client(
@@ -8,8 +9,8 @@ const List<Client> kMockClients = [
     telefono: '+591 70011223',
     edad: 28,
     tipoOjo: 'Almendrados',
-    visitas: 12,
     email: 'maria.rodriguez@correo.com',
+    status: ClientStatus.enEspera,
   ),
   Client(
     id: 2,
@@ -18,7 +19,7 @@ const List<Client> kMockClients = [
     telefono: '+591 71234567',
     edad: 24,
     tipoOjo: 'Redondos',
-    visitas: 3,
+    status: ClientStatus.sinEstado,
   ),
   Client(
     id: 3,
@@ -27,9 +28,8 @@ const List<Client> kMockClients = [
     telefono: '+591 72987654',
     edad: 32,
     tipoOjo: 'Caídos',
-    visitas: 8,
     email: 'lucia.m@correo.com',
-    notas: 'Alergia leve a adhesivos sin fragancia',
+    status: ClientStatus.atendido,
   ),
   Client(
     id: 4,
@@ -38,7 +38,7 @@ const List<Client> kMockClients = [
     telefono: '+591 73111223',
     edad: 26,
     tipoOjo: 'Almendrados',
-    visitas: 6,
+    status: ClientStatus.reserva,
   ),
   Client(
     id: 5,
@@ -47,7 +47,7 @@ const List<Client> kMockClients = [
     telefono: '+591 76554433',
     edad: 30,
     tipoOjo: 'Asiáticos',
-    visitas: 1,
+    status: ClientStatus.sinEstado,
   ),
   Client(
     id: 6,
@@ -56,7 +56,7 @@ const List<Client> kMockClients = [
     telefono: '+591 77665544',
     edad: 22,
     tipoOjo: 'Redondos',
-    visitas: 4,
+    status: ClientStatus.sinEstado,
   ),
   Client(
     id: 7,
@@ -65,8 +65,8 @@ const List<Client> kMockClients = [
     telefono: '+591 78889900',
     edad: 35,
     tipoOjo: 'Almendrados',
-    visitas: 15,
     email: 'valeria.t@correo.com',
+    status: ClientStatus.pagado,
   ),
   Client(
     id: 8,
@@ -75,6 +75,6 @@ const List<Client> kMockClients = [
     telefono: '+591 79001122',
     edad: 27,
     tipoOjo: 'Caídos',
-    visitas: 2,
+    status: ClientStatus.sinEstado,
   ),
 ];

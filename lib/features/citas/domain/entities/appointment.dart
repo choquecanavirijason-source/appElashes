@@ -1,59 +1,112 @@
 import '../../../../shared/enums/appointment_status.dart';
+import '../../data/models/appointment_dto.dart';
 
 class Appointment {
   const Appointment({
     required this.id,
-    required this.clienteId,
-    required this.operariaId,
-    required this.servicio,
-    required this.fechaHora,
-    required this.duracionMinutos,
-    required this.precio,
-    required this.estado,
-    this.notas,
+    this.ticketCode,
+    required this.clientId,
+    required this.clientName,
+    this.professionalId,
+    this.professionalName,
+    this.serviceId,
+    this.serviceName,
+    this.servicePrice,
+    this.branchId,
+    required this.startTime,
+    required this.endTime,
+    required this.status,
+    this.advancePaymentAmount = 0.0,
   });
 
   final int id;
-  final int clienteId;
-  final int operariaId;
-  final String servicio;
-  final DateTime fechaHora;
-  final int duracionMinutos;
-  final double precio;
-  final AppointmentStatus estado;
-  final String? notas;
+  final String? ticketCode;
+  final int clientId;
+  final String clientName;
+  final int? professionalId;
+  final String? professionalName;
+  final int? serviceId;
+  final String? serviceName;
+  final double? servicePrice;
+  final int? branchId;
+  final DateTime startTime;
+  final DateTime endTime;
+  final AppointmentStatus status;
+  final double advancePaymentAmount;
 
-  DateTime get fechaFin =>
-      fechaHora.add(Duration(minutes: duracionMinutos));
+  int get duracionMinutos => endTime.difference(startTime).inMinutes;
 
   bool get esHoy {
     final now = DateTime.now();
-    return fechaHora.year == now.year &&
-        fechaHora.month == now.month &&
-        fechaHora.day == now.day;
+    return startTime.year == now.year &&
+        startTime.month == now.month &&
+        startTime.day == now.day;
+  }
+
+  String get professionalInitials {
+    final name = professionalName;
+    if (name == null || name.isEmpty) return '?';
+    final parts = name.split(RegExp(r'[\s_]'));
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name.substring(0, name.length >= 2 ? 2 : 1).toUpperCase();
+  }
+
+  factory Appointment.fromDto(AppointmentDto dto) {
+    final clientName =
+        '${dto.client.name} ${dto.client.lastName ?? ''}'.trim();
+    return Appointment(
+      id: dto.id,
+      ticketCode: dto.ticketCode,
+      clientId: dto.clientId,
+      clientName: clientName,
+      professionalId: dto.professionalId,
+      professionalName: dto.professional?.username,
+      serviceId: dto.serviceId,
+      serviceName: dto.service?.name ??
+          dto.services?.firstOrNull?.name,
+      servicePrice: dto.service?.price ??
+          dto.services?.firstOrNull?.price,
+      branchId: dto.branchId,
+      startTime: dto.startTime,
+      endTime: dto.endTime,
+      status: AppointmentStatus.fromString(dto.status),
+      advancePaymentAmount: dto.advancePaymentAmount,
+    );
   }
 
   Appointment copyWith({
     int? id,
-    int? clienteId,
-    int? operariaId,
-    String? servicio,
-    DateTime? fechaHora,
-    int? duracionMinutos,
-    double? precio,
-    AppointmentStatus? estado,
-    String? notas,
+    String? ticketCode,
+    int? clientId,
+    String? clientName,
+    int? professionalId,
+    String? professionalName,
+    int? serviceId,
+    String? serviceName,
+    double? servicePrice,
+    int? branchId,
+    DateTime? startTime,
+    DateTime? endTime,
+    AppointmentStatus? status,
+    double? advancePaymentAmount,
   }) {
     return Appointment(
       id: id ?? this.id,
-      clienteId: clienteId ?? this.clienteId,
-      operariaId: operariaId ?? this.operariaId,
-      servicio: servicio ?? this.servicio,
-      fechaHora: fechaHora ?? this.fechaHora,
-      duracionMinutos: duracionMinutos ?? this.duracionMinutos,
-      precio: precio ?? this.precio,
-      estado: estado ?? this.estado,
-      notas: notas ?? this.notas,
+      ticketCode: ticketCode ?? this.ticketCode,
+      clientId: clientId ?? this.clientId,
+      clientName: clientName ?? this.clientName,
+      professionalId: professionalId ?? this.professionalId,
+      professionalName: professionalName ?? this.professionalName,
+      serviceId: serviceId ?? this.serviceId,
+      serviceName: serviceName ?? this.serviceName,
+      servicePrice: servicePrice ?? this.servicePrice,
+      branchId: branchId ?? this.branchId,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      status: status ?? this.status,
+      advancePaymentAmount: advancePaymentAmount ?? this.advancePaymentAmount,
     );
   }
 }

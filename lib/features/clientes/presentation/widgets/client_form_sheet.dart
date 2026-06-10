@@ -1,7 +1,11 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/error/api_exception.dart';
 import '../../../../core/presentation/atoms/pill_button.dart';
+import '../../data/models/client_dto.dart';
 import '../providers/clients_provider.dart';
 
 class ClientFormSheet extends ConsumerStatefulWidget {
@@ -24,13 +28,10 @@ class _ClientFormSheetState extends ConsumerState<ClientFormSheet> {
   final _formKey = GlobalKey<FormState>();
   final _nombre = TextEditingController();
   final _apellido = TextEditingController();
-  final _telefono = TextEditingController(text: '+591 ');
+  final _telefono = TextEditingController(text: '+591');
   final _edad = TextEditingController();
   final _email = TextEditingController();
-  final _notas = TextEditingController();
-  String _tipoOjo = 'Almendrados';
-
-  static const _tipos = ['Almendrados', 'Redondos', 'Caídos', 'Asiáticos'];
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -39,25 +40,57 @@ class _ClientFormSheetState extends ConsumerState<ClientFormSheet> {
     _telefono.dispose();
     _edad.dispose();
     _email.dispose();
-    _notas.dispose();
     super.dispose();
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    ref.read(clientsProvider.notifier).add(
-          nombre: _nombre.text,
-          apellido: _apellido.text,
-          telefono: _telefono.text,
-          edad: int.parse(_edad.text),
-          tipoOjo: _tipoOjo,
-          email: _email.text,
-          notas: _notas.text,
-        );
-    Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Cliente "${_nombre.text}" registrado')),
+
+    setState(() => _isLoading = true);
+
+    final telefonoVal = _telefono.text.trim();
+    final emailVal = _email.text.trim();
+
+    final input = ClientCreateDto(
+      name: _nombre.text.trim(),
+      lastName: _apellido.text.trim(),
+      age: _edad.text.trim().isEmpty ? null : int.tryParse(_edad.text.trim()),
+      phone: telefonoVal.isEmpty ? null : telefonoVal,
+      email: emailVal.isEmpty ? null : emailVal,
     );
+
+    try {
+      await ref.read(clientsListProvider.notifier).createClient(input);
+      if (mounted) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${input.name} ${input.lastName} registrado'),
+          ),
+        );
+      }
+    } on ApiException catch (e) {
+      developer.log('Error al crear cliente', name: 'clientes', error: e);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message)),
+        );
+      }
+    } catch (e, st) {
+      developer.log(
+        'Error inesperado al crear cliente',
+        name: 'clientes',
+        error: e,
+        stackTrace: st,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error inesperado. Intenta de nuevo.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -80,16 +113,18 @@ class _ClientFormSheetState extends ConsumerState<ClientFormSheet> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _nombre,
-                decoration: const InputDecoration(labelText: 'Nombre'),
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(labelText: 'Nombre *'),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Requerido' : null,
+                    v == null || v.trim().length < 2 ? 'Mínimo 2 caracteres' : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _apellido,
-                decoration: const InputDecoration(labelText: 'Apellido'),
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(labelText: 'Apellido *'),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Requerido' : null,
+                    v == null || v.trim().length < 2 ? 'Mínimo 2 caracteres' : null,
               ),
               const SizedBox(height: 12),
               Row(
@@ -99,11 +134,10 @@ class _ClientFormSheetState extends ConsumerState<ClientFormSheet> {
                     child: TextFormField(
                       controller: _telefono,
                       keyboardType: TextInputType.phone,
-                      decoration:
-                          const InputDecoration(labelText: 'Teléfono'),
-                      validator: (v) => v == null || v.trim().length < 8
-                          ? 'Mínimo 8 dígitos'
-                          : null,
+                      decoration: const InputDecoration(
+                        labelText: 'Teléfono',
+                        hintText: '+59171234567',
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -113,10 +147,9 @@ class _ClientFormSheetState extends ConsumerState<ClientFormSheet> {
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(labelText: 'Edad'),
                       validator: (v) {
-                        final n = int.tryParse(v ?? '');
-                        if (n == null || n < 14 || n > 100) {
-                          return '14–100';
-                        }
+                        if (v == null || v.trim().isEmpty) return null;
+                        final n = int.tryParse(v.trim());
+                        if (n == null || n < 1 || n > 100) return '1–100';
                         return null;
                       },
                     ),
@@ -124,32 +157,15 @@ class _ClientFormSheetState extends ConsumerState<ClientFormSheet> {
                 ],
               ),
               const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: _tipoOjo,
-                decoration: const InputDecoration(labelText: 'Tipo de ojo'),
-                items: _tipos
-                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                    .toList(),
-                onChanged: (v) => setState(() => _tipoOjo = v ?? _tipoOjo),
-              ),
-              const SizedBox(height: 12),
               TextFormField(
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,
-                decoration:
-                    const InputDecoration(labelText: 'Email (opcional)'),
+                decoration: const InputDecoration(labelText: 'Email (opcional)'),
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _notas,
-                maxLines: 2,
-                decoration:
-                    const InputDecoration(labelText: 'Notas (opcional)'),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               PillButton(
-                label: 'Registrar cliente',
-                onPressed: _onSubmit,
+                label: _isLoading ? 'Guardando…' : 'Registrar cliente',
+                onPressed: _isLoading ? null : _onSubmit,
                 height: 52,
               ),
             ],

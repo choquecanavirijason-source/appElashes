@@ -1,56 +1,57 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/storage/prefs_storage.dart';
 import '../../../../shared/data/mock_services.dart';
+import '../../data/models/service_dto.dart';
+import '../../data/services_repository_impl.dart';
 import '../../domain/entities/service.dart';
 
-class ServicesNotifier extends Notifier<List<Service>> {
+class ServicesListNotifier extends AutoDisposeAsyncNotifier<List<Service>> {
   @override
-  List<Service> build() => List.unmodifiable(kMockServices);
-
-  void add({
-    required String nombre,
-    required String categoria,
-    required double precio,
-    required int duracionMinutos,
-    String? descripcion,
-    bool activo = true,
-  }) {
-    final nextId = state.isEmpty
-        ? 1
-        : (state.map((s) => s.id).reduce((a, b) => a > b ? a : b) + 1);
-    final nuevo = Service(
-      id: nextId,
-      nombre: nombre.trim(),
-      categoria: categoria,
-      precio: precio,
-      duracionMinutos: duracionMinutos,
-      activo: activo,
-      descripcion: descripcion?.trim().isEmpty ?? true
-          ? null
-          : descripcion!.trim(),
-    );
-    state = [...state, nuevo];
+  Future<List<Service>> build() async {
+    final branchId = ref.watch(prefsStorageProvider).selectedBranchId;
+    return ref.read(servicesRepositoryProvider).list(branchId: branchId);
   }
 
-  void toggleActivo(int id) {
-    state = [
-      for (final s in state)
-        if (s.id == id) s.copyWith(activo: !s.activo) else s,
-    ];
+  Future<void> createService(ServiceCreateDto input) async {
+    await ref.read(servicesRepositoryProvider).create(input);
+    ref.invalidateSelf();
   }
 
-  Service? byId(int id) {
-    for (final s in state) {
-      if (s.id == id) return s;
-    }
-    return null;
+  Future<void> editService(int id, ServiceUpdateDto input) async {
+    await ref.read(servicesRepositoryProvider).update(id, input);
+    ref.invalidateSelf();
+  }
+
+  Future<void> removeService(int id) async {
+    await ref.read(servicesRepositoryProvider).delete(id);
+    ref.invalidateSelf();
   }
 }
 
-final servicesProvider =
-    NotifierProvider<ServicesNotifier, List<Service>>(ServicesNotifier.new);
+final servicesListProvider =
+    AutoDisposeAsyncNotifierProvider<ServicesListNotifier, List<Service>>(
+  ServicesListNotifier.new,
+);
 
-/// Sólo servicios activos (para usar en formulario de ventas).
+// ── Proveedores legacy — usados por ventas hasta que migre al backend ──
+
+class _MockServicesNotifier extends Notifier<List<Service>> {
+  @override
+  List<Service> build() => List.unmodifiable(kMockServices);
+
+  Service? byId(int id) => state.where((s) => s.id == id).firstOrNull;
+}
+
+/// Proveedor sincrónico con datos mock. Usado por ventas hasta su migración.
+final servicesProvider =
+    NotifierProvider<_MockServicesNotifier, List<Service>>(
+  _MockServicesNotifier.new,
+);
+
+/// Sólo servicios activos (todos en mock — backend no tiene campo activo).
 final activeServicesProvider = Provider<List<Service>>((ref) {
-  return ref.watch(servicesProvider).where((s) => s.activo).toList();
+  return ref.watch(servicesProvider);
 });

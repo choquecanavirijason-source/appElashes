@@ -1,9 +1,46 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/data/mock_operarias.dart';
+import '../../data/models/operaria_dto.dart';
+import '../../data/operarias_repository_impl.dart';
 import '../../domain/entities/operaria.dart';
 
-class OperariasNotifier extends Notifier<List<Operaria>> {
+// ── Real backend provider ────────────────────────────────────────────────────
+
+class OperariasListNotifier
+    extends AutoDisposeAsyncNotifier<List<Operaria>> {
+  @override
+  Future<List<Operaria>> build() async {
+    return ref.read(operariasRepositoryProvider).list();
+  }
+
+  Future<void> createOperaria(OperariaCreateDto input) async {
+    await ref.read(operariasRepositoryProvider).create(input);
+    ref.invalidateSelf();
+    await future;
+  }
+
+  Future<void> editOperaria(int id, OperariaUpdateDto input) async {
+    await ref.read(operariasRepositoryProvider).update(id, input);
+    ref.invalidateSelf();
+    await future;
+  }
+
+  Future<void> removeOperaria(int id) async {
+    await ref.read(operariasRepositoryProvider).delete(id);
+    ref.invalidateSelf();
+    await future;
+  }
+}
+
+final operariasListProvider =
+    AutoDisposeAsyncNotifierProvider<OperariasListNotifier, List<Operaria>>(
+  OperariasListNotifier.new,
+);
+
+// ── Legacy mock providers (used by features not yet migrated) ────────────────
+
+class _MockOperariasNotifier extends Notifier<List<Operaria>> {
   @override
   List<Operaria> build() => List.unmodifiable(kMockOperarias);
 
@@ -46,8 +83,10 @@ class OperariasNotifier extends Notifier<List<Operaria>> {
 }
 
 final operariasProvider =
-    NotifierProvider<OperariasNotifier, List<Operaria>>(OperariasNotifier.new);
+    NotifierProvider<_MockOperariasNotifier, List<Operaria>>(
+  _MockOperariasNotifier.new,
+);
 
-final operariaByIdProvider = Provider.family<Operaria?, int>((ref, id) {
-  return ref.watch(operariasProvider.notifier).byId(id);
-});
+final operariaByIdProvider = Provider.family<Operaria?, int>(
+  (ref, id) => ref.watch(operariasProvider.notifier).byId(id),
+);
