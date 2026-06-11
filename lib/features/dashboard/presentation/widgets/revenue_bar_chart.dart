@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../ventas/presentation/providers/sales_provider.dart';
+import '../../domain/entities/revenue_point.dart';
 
 class RevenueBarChart extends StatelessWidget {
   const RevenueBarChart({super.key, required this.data});
 
-  final List<DailyRevenue> data;
+  final List<DashboardRevenuePoint> data;
 
   @override
   Widget build(BuildContext context) {

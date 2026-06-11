@@ -8,6 +8,7 @@ import '../../../citas/domain/entities/appointment.dart';
 import '../../../citas/presentation/providers/appointments_provider.dart';
 import '../../../dashboard/domain/entities/dashboard_overview.dart';
 import '../../../dashboard/presentation/providers/dashboard_overview_provider.dart';
+import '../../../shell/presentation/providers/shell_tab_provider.dart';
 
 class InicioTab extends ConsumerWidget {
   const InicioTab({super.key});
@@ -51,14 +52,20 @@ class InicioTab extends ConsumerWidget {
                   citasHoy: citasHoy.length,
                   overview: DashboardOverview.empty,
                   isLoading: true,
+                  onTapEquipo: () => ref.read(shellTabProvider.notifier).state = 2,
+                  onTapSucursales: () => ref.read(shellTabProvider.notifier).state = 1,
                 ),
                 error: (_, __) => _KpiGrid(
                   citasHoy: citasHoy.length,
                   overview: DashboardOverview.empty,
+                  onTapEquipo: () => ref.read(shellTabProvider.notifier).state = 2,
+                  onTapSucursales: () => ref.read(shellTabProvider.notifier).state = 1,
                 ),
                 data: (overview) => _KpiGrid(
                   citasHoy: citasHoy.length,
                   overview: overview,
+                  onTapEquipo: () => ref.read(shellTabProvider.notifier).state = 2,
+                  onTapSucursales: () => ref.read(shellTabProvider.notifier).state = 1,
                 ),
               ),
               const SizedBox(height: 24),
@@ -103,11 +110,15 @@ class _KpiGrid extends StatelessWidget {
     required this.citasHoy,
     required this.overview,
     this.isLoading = false,
+    this.onTapEquipo,
+    this.onTapSucursales,
   });
 
   final int citasHoy;
   final DashboardOverview overview;
   final bool isLoading;
+  final VoidCallback? onTapEquipo;
+  final VoidCallback? onTapSucursales;
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +150,7 @@ class _KpiGrid extends StatelessWidget {
           iconColor: AppColors.goldAccent,
           value: isLoading ? '—' : '${overview.activeEmployees}',
           label: 'Equipo activo',
+          onTap: onTapEquipo,
         ),
         _KpiCard(
           icon: Icons.pending_actions_outlined,
@@ -246,6 +258,7 @@ class _KpiCard extends StatelessWidget {
     required this.iconColor,
     required this.value,
     required this.label,
+    this.onTap,
   });
 
   final IconData icon;
@@ -253,13 +266,19 @@ class _KpiCard extends StatelessWidget {
   final Color iconColor;
   final String value;
   final String label;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Material(
+      color: AppColors.darkCard,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.darkCardElevated),
       ),
@@ -294,6 +313,8 @@ class _KpiCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+        ),
       ),
     );
   }

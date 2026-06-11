@@ -40,4 +40,11 @@ class AppRoutes {
   static const String adminPos = '/admin/pos';
   static const String adminPosHistory = '/admin/pos/history';
   static const String adminPosTracking = '/admin/pos-tracking';
+
+  static const String inventario = '/inventario';
+  static const String pagos = '/pagos';
+  static const String comisiones = '/comisiones';
+  static const String cierreCaja = '/cierre-caja';
+  static const String clientes = '/clientes';
+  static const String roles = '/roles';
 }

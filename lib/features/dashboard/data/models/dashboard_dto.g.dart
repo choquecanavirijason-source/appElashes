@@ -6,6 +6,42 @@ part of 'dashboard_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_$RevenueSeriesItemDtoImpl _$$RevenueSeriesItemDtoImplFromJson(
+        Map<String, dynamic> json) =>
+    _$RevenueSeriesItemDtoImpl(
+      bucket: json['bucket'] as String,
+      paidAmount: (json['paid_amount'] as num?)?.toDouble() ?? 0.0,
+      paymentsCount: (json['payments_count'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$$RevenueSeriesItemDtoImplToJson(
+        _$RevenueSeriesItemDtoImpl instance) =>
+    <String, dynamic>{
+      'bucket': instance.bucket,
+      'paid_amount': instance.paidAmount,
+      'payments_count': instance.paymentsCount,
+    };
+
+_$ServiceDistributionItemDtoImpl _$$ServiceDistributionItemDtoImplFromJson(
+        Map<String, dynamic> json) =>
+    _$ServiceDistributionItemDtoImpl(
+      serviceId: (json['service_id'] as num).toInt(),
+      serviceName: json['service_name'] as String,
+      ticketsCount: (json['tickets_count'] as num?)?.toInt() ?? 0,
+      completedCount: (json['completed_count'] as num?)?.toInt() ?? 0,
+      estimatedRevenue: (json['estimated_revenue'] as num?)?.toDouble() ?? 0.0,
+    );
+
+Map<String, dynamic> _$$ServiceDistributionItemDtoImplToJson(
+        _$ServiceDistributionItemDtoImpl instance) =>
+    <String, dynamic>{
+      'service_id': instance.serviceId,
+      'service_name': instance.serviceName,
+      'tickets_count': instance.ticketsCount,
+      'completed_count': instance.completedCount,
+      'estimated_revenue': instance.estimatedRevenue,
+    };
+
 _$DashboardCardsDtoImpl _$$DashboardCardsDtoImplFromJson(
         Map<String, dynamic> json) =>
     _$DashboardCardsDtoImpl(

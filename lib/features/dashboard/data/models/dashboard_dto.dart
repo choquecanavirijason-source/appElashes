@@ -4,6 +4,32 @@ part 'dashboard_dto.freezed.dart';
 part 'dashboard_dto.g.dart';
 
 @freezed
+class RevenueSeriesItemDto with _$RevenueSeriesItemDto {
+  const factory RevenueSeriesItemDto({
+    required String bucket,
+    @JsonKey(name: 'paid_amount') @Default(0.0) double paidAmount,
+    @JsonKey(name: 'payments_count') @Default(0) int paymentsCount,
+  }) = _RevenueSeriesItemDto;
+
+  factory RevenueSeriesItemDto.fromJson(Map<String, dynamic> json) =>
+      _$RevenueSeriesItemDtoFromJson(json);
+}
+
+@freezed
+class ServiceDistributionItemDto with _$ServiceDistributionItemDto {
+  const factory ServiceDistributionItemDto({
+    @JsonKey(name: 'service_id') required int serviceId,
+    @JsonKey(name: 'service_name') required String serviceName,
+    @JsonKey(name: 'tickets_count') @Default(0) int ticketsCount,
+    @JsonKey(name: 'completed_count') @Default(0) int completedCount,
+    @JsonKey(name: 'estimated_revenue') @Default(0.0) double estimatedRevenue,
+  }) = _ServiceDistributionItemDto;
+
+  factory ServiceDistributionItemDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceDistributionItemDtoFromJson(json);
+}
+
+@freezed
 class DashboardCardsDto with _$DashboardCardsDto {
   const factory DashboardCardsDto({
     @JsonKey(name: 'clients_total') @Default(0) int clientsTotal,

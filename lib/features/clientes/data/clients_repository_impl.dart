@@ -15,7 +15,7 @@ class ClientsRepositoryImpl implements ClientsRepository {
   Future<List<Client>> list({
     int? branchId,
     String? search,
-    int limit = 500,
+    int limit = 100,
   }) async {
     final dtos = await _api.list(
       branchId: branchId,

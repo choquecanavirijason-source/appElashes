@@ -43,7 +43,7 @@ class ApiEndpoints {
   static const String posSales = '/pos-sales/';
   static String posSaleById(int id) => '/pos-sales/$id';
   static String posSaleCancel(int id) => '/pos-sales/$id/cancel';
-  static String posSaleReceipt(int id) => '/pos-sales/$id/receipt.pdf';
+  static String posSaleReceipt(int id) => '/pos-sales/$id/receipt/pdf';
 
   // Payments
   static const String payments = '/payments/';
@@ -62,6 +62,10 @@ class ApiEndpoints {
       '/dashboard/service-distribution';
   static const String dashboardInventoryDistribution =
       '/dashboard/inventory-distribution';
+  static const String reportsDailyClosing = '/reports/daily-closing';
+
+  // Comisiones
+  static const String commissionPayments = '/commission-payments';
 
   // Tracking
   static const String tracking = '/tracking/';

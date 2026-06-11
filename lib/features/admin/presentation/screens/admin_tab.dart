@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../shell/presentation/providers/shell_tab_provider.dart';
 
-class AdminTab extends StatelessWidget {
+class AdminTab extends ConsumerWidget {
   const AdminTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -35,12 +37,22 @@ class AdminTab extends StatelessWidget {
               badge: _HoyBadge(),
             ),
             const SizedBox(height: 10),
-            const _ListTileCard(
+            _ListTileCard(
               iconBg: AppColors.iconBgGreen,
               iconColor: AppColors.onlineGreen,
               icon: Icons.payments_outlined,
               title: 'Comisiones',
               subtitle: 'Pagos a operarias y saldos',
+              onTap: () => context.push(AppRoutes.comisiones),
+            ),
+            const SizedBox(height: 10),
+            _ListTileCard(
+              iconBg: const Color(0xFF0D1A2D),
+              iconColor: AppColors.statusReserva,
+              icon: Icons.people_alt_outlined,
+              title: 'Clientes',
+              subtitle: 'Listado, búsqueda y registro',
+              onTap: () => context.push(AppRoutes.clientes),
             ),
             const SizedBox(height: 10),
             _ListTileCard(
@@ -68,47 +80,71 @@ class AdminTab extends StatelessWidget {
                   subtitle: 'Técnicas y comisiones',
                   onTap: () => context.push(AppRoutes.servicios),
                 ),
-                const _GridCard(
+                _GridCard(
                   iconBg: AppColors.iconBgGreen,
                   iconColor: AppColors.onlineGreen,
                   icon: Icons.receipt_long_outlined,
                   title: 'Pagos',
                   subtitle: 'Cobros y métodos',
+                  onTap: () => context.push(AppRoutes.pagos),
                 ),
-                const _GridCard(
+                _GridCard(
                   iconBg: AppColors.iconBgTeal,
                   iconColor: AppColors.statusAtendido,
-                  icon: Icons.history,
-                  title: 'Historial',
-                  subtitle: 'Servicios realizados',
+                  icon: Icons.point_of_sale,
+                  title: 'Ventas POS',
+                  subtitle: 'Historial de ventas',
+                  onTap: () => context.push(AppRoutes.ventas),
                 ),
-                const _GridCard(
+                _GridCard(
                   iconBg: AppColors.iconBgOrange,
-                  iconColor: Color(0xFFF97316),
+                  iconColor: const Color(0xFFF97316),
                   icon: Icons.groups_outlined,
                   title: 'Equipo',
                   subtitle: 'Operarias y staff',
+                  onTap: () =>
+                      ref.read(shellTabProvider.notifier).state = 2,
                 ),
               ],
             ),
             const SizedBox(height: 24),
             const _SectionLabel('NEGOCIO'),
             const SizedBox(height: 12),
-            const _ListTileCard(
+            _ListTileCard(
+              iconBg: const Color(0xFF0D1F2D),
+              iconColor: AppColors.statusEnServicio,
+              icon: Icons.inventory_2_outlined,
+              title: 'Inventario',
+              subtitle: 'Productos, stock y alertas',
+              onTap: () => context.push(AppRoutes.inventario),
+            ),
+            const SizedBox(height: 10),
+            _ListTileCard(
               iconBg: AppColors.iconBgOlive,
               iconColor: AppColors.goldAccent,
               icon: Icons.store_outlined,
               title: 'Sucursales',
               subtitle: 'Crea y administra tus locales',
-              badge: _RoleBadge(label: 'Super Admin'),
+              badge: const _RoleBadge(label: 'Super Admin'),
+              onTap: () => ref.read(shellTabProvider.notifier).state = 1,
             ),
             const SizedBox(height: 10),
-            const _ListTileCard(
+            _ListTileCard(
               iconBg: AppColors.iconBgTeal,
               iconColor: AppColors.statusEnServicio,
               icon: Icons.account_balance_wallet_outlined,
               title: 'Cierres de caja',
               subtitle: 'Auditoría de cierres en todas las sucursales',
+              onTap: () => context.push(AppRoutes.cierreCaja),
+            ),
+            const SizedBox(height: 10),
+            _ListTileCard(
+              iconBg: const Color(0xFF1A1026),
+              iconColor: AppColors.statusReserva,
+              icon: Icons.admin_panel_settings_outlined,
+              title: 'Roles y permisos',
+              subtitle: 'Gestión de accesos del equipo',
+              onTap: () => context.push(AppRoutes.roles),
             ),
             const SizedBox(height: 10),
             const _ListTileCard(

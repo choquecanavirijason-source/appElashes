@@ -14,6 +14,476 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+RevenueSeriesItemDto _$RevenueSeriesItemDtoFromJson(Map<String, dynamic> json) {
+  return _RevenueSeriesItemDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$RevenueSeriesItemDto {
+  String get bucket => throw _privateConstructorUsedError;
+  @JsonKey(name: 'paid_amount')
+  double get paidAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'payments_count')
+  int get paymentsCount => throw _privateConstructorUsedError;
+
+  /// Serializes this RevenueSeriesItemDto to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of RevenueSeriesItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $RevenueSeriesItemDtoCopyWith<RevenueSeriesItemDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $RevenueSeriesItemDtoCopyWith<$Res> {
+  factory $RevenueSeriesItemDtoCopyWith(RevenueSeriesItemDto value,
+          $Res Function(RevenueSeriesItemDto) then) =
+      _$RevenueSeriesItemDtoCopyWithImpl<$Res, RevenueSeriesItemDto>;
+  @useResult
+  $Res call(
+      {String bucket,
+      @JsonKey(name: 'paid_amount') double paidAmount,
+      @JsonKey(name: 'payments_count') int paymentsCount});
+}
+
+/// @nodoc
+class _$RevenueSeriesItemDtoCopyWithImpl<$Res,
+        $Val extends RevenueSeriesItemDto>
+    implements $RevenueSeriesItemDtoCopyWith<$Res> {
+  _$RevenueSeriesItemDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of RevenueSeriesItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? bucket = null,
+    Object? paidAmount = null,
+    Object? paymentsCount = null,
+  }) {
+    return _then(_value.copyWith(
+      bucket: null == bucket
+          ? _value.bucket
+          : bucket // ignore: cast_nullable_to_non_nullable
+              as String,
+      paidAmount: null == paidAmount
+          ? _value.paidAmount
+          : paidAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      paymentsCount: null == paymentsCount
+          ? _value.paymentsCount
+          : paymentsCount // ignore: cast_nullable_to_non_nullable
+              as int,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$RevenueSeriesItemDtoImplCopyWith<$Res>
+    implements $RevenueSeriesItemDtoCopyWith<$Res> {
+  factory _$$RevenueSeriesItemDtoImplCopyWith(_$RevenueSeriesItemDtoImpl value,
+          $Res Function(_$RevenueSeriesItemDtoImpl) then) =
+      __$$RevenueSeriesItemDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String bucket,
+      @JsonKey(name: 'paid_amount') double paidAmount,
+      @JsonKey(name: 'payments_count') int paymentsCount});
+}
+
+/// @nodoc
+class __$$RevenueSeriesItemDtoImplCopyWithImpl<$Res>
+    extends _$RevenueSeriesItemDtoCopyWithImpl<$Res, _$RevenueSeriesItemDtoImpl>
+    implements _$$RevenueSeriesItemDtoImplCopyWith<$Res> {
+  __$$RevenueSeriesItemDtoImplCopyWithImpl(_$RevenueSeriesItemDtoImpl _value,
+      $Res Function(_$RevenueSeriesItemDtoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of RevenueSeriesItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? bucket = null,
+    Object? paidAmount = null,
+    Object? paymentsCount = null,
+  }) {
+    return _then(_$RevenueSeriesItemDtoImpl(
+      bucket: null == bucket
+          ? _value.bucket
+          : bucket // ignore: cast_nullable_to_non_nullable
+              as String,
+      paidAmount: null == paidAmount
+          ? _value.paidAmount
+          : paidAmount // ignore: cast_nullable_to_non_nullable
+              as double,
+      paymentsCount: null == paymentsCount
+          ? _value.paymentsCount
+          : paymentsCount // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$RevenueSeriesItemDtoImpl implements _RevenueSeriesItemDto {
+  const _$RevenueSeriesItemDtoImpl(
+      {required this.bucket,
+      @JsonKey(name: 'paid_amount') this.paidAmount = 0.0,
+      @JsonKey(name: 'payments_count') this.paymentsCount = 0});
+
+  factory _$RevenueSeriesItemDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RevenueSeriesItemDtoImplFromJson(json);
+
+  @override
+  final String bucket;
+  @override
+  @JsonKey(name: 'paid_amount')
+  final double paidAmount;
+  @override
+  @JsonKey(name: 'payments_count')
+  final int paymentsCount;
+
+  @override
+  String toString() {
+    return 'RevenueSeriesItemDto(bucket: $bucket, paidAmount: $paidAmount, paymentsCount: $paymentsCount)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RevenueSeriesItemDtoImpl &&
+            (identical(other.bucket, bucket) || other.bucket == bucket) &&
+            (identical(other.paidAmount, paidAmount) ||
+                other.paidAmount == paidAmount) &&
+            (identical(other.paymentsCount, paymentsCount) ||
+                other.paymentsCount == paymentsCount));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, bucket, paidAmount, paymentsCount);
+
+  /// Create a copy of RevenueSeriesItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RevenueSeriesItemDtoImplCopyWith<_$RevenueSeriesItemDtoImpl>
+      get copyWith =>
+          __$$RevenueSeriesItemDtoImplCopyWithImpl<_$RevenueSeriesItemDtoImpl>(
+              this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$RevenueSeriesItemDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _RevenueSeriesItemDto implements RevenueSeriesItemDto {
+  const factory _RevenueSeriesItemDto(
+          {required final String bucket,
+          @JsonKey(name: 'paid_amount') final double paidAmount,
+          @JsonKey(name: 'payments_count') final int paymentsCount}) =
+      _$RevenueSeriesItemDtoImpl;
+
+  factory _RevenueSeriesItemDto.fromJson(Map<String, dynamic> json) =
+      _$RevenueSeriesItemDtoImpl.fromJson;
+
+  @override
+  String get bucket;
+  @override
+  @JsonKey(name: 'paid_amount')
+  double get paidAmount;
+  @override
+  @JsonKey(name: 'payments_count')
+  int get paymentsCount;
+
+  /// Create a copy of RevenueSeriesItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$RevenueSeriesItemDtoImplCopyWith<_$RevenueSeriesItemDtoImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+ServiceDistributionItemDto _$ServiceDistributionItemDtoFromJson(
+    Map<String, dynamic> json) {
+  return _ServiceDistributionItemDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ServiceDistributionItemDto {
+  @JsonKey(name: 'service_id')
+  int get serviceId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'service_name')
+  String get serviceName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'tickets_count')
+  int get ticketsCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'completed_count')
+  int get completedCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'estimated_revenue')
+  double get estimatedRevenue => throw _privateConstructorUsedError;
+
+  /// Serializes this ServiceDistributionItemDto to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ServiceDistributionItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ServiceDistributionItemDtoCopyWith<ServiceDistributionItemDto>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ServiceDistributionItemDtoCopyWith<$Res> {
+  factory $ServiceDistributionItemDtoCopyWith(ServiceDistributionItemDto value,
+          $Res Function(ServiceDistributionItemDto) then) =
+      _$ServiceDistributionItemDtoCopyWithImpl<$Res,
+          ServiceDistributionItemDto>;
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'service_id') int serviceId,
+      @JsonKey(name: 'service_name') String serviceName,
+      @JsonKey(name: 'tickets_count') int ticketsCount,
+      @JsonKey(name: 'completed_count') int completedCount,
+      @JsonKey(name: 'estimated_revenue') double estimatedRevenue});
+}
+
+/// @nodoc
+class _$ServiceDistributionItemDtoCopyWithImpl<$Res,
+        $Val extends ServiceDistributionItemDto>
+    implements $ServiceDistributionItemDtoCopyWith<$Res> {
+  _$ServiceDistributionItemDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ServiceDistributionItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? serviceId = null,
+    Object? serviceName = null,
+    Object? ticketsCount = null,
+    Object? completedCount = null,
+    Object? estimatedRevenue = null,
+  }) {
+    return _then(_value.copyWith(
+      serviceId: null == serviceId
+          ? _value.serviceId
+          : serviceId // ignore: cast_nullable_to_non_nullable
+              as int,
+      serviceName: null == serviceName
+          ? _value.serviceName
+          : serviceName // ignore: cast_nullable_to_non_nullable
+              as String,
+      ticketsCount: null == ticketsCount
+          ? _value.ticketsCount
+          : ticketsCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      completedCount: null == completedCount
+          ? _value.completedCount
+          : completedCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      estimatedRevenue: null == estimatedRevenue
+          ? _value.estimatedRevenue
+          : estimatedRevenue // ignore: cast_nullable_to_non_nullable
+              as double,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ServiceDistributionItemDtoImplCopyWith<$Res>
+    implements $ServiceDistributionItemDtoCopyWith<$Res> {
+  factory _$$ServiceDistributionItemDtoImplCopyWith(
+          _$ServiceDistributionItemDtoImpl value,
+          $Res Function(_$ServiceDistributionItemDtoImpl) then) =
+      __$$ServiceDistributionItemDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'service_id') int serviceId,
+      @JsonKey(name: 'service_name') String serviceName,
+      @JsonKey(name: 'tickets_count') int ticketsCount,
+      @JsonKey(name: 'completed_count') int completedCount,
+      @JsonKey(name: 'estimated_revenue') double estimatedRevenue});
+}
+
+/// @nodoc
+class __$$ServiceDistributionItemDtoImplCopyWithImpl<$Res>
+    extends _$ServiceDistributionItemDtoCopyWithImpl<$Res,
+        _$ServiceDistributionItemDtoImpl>
+    implements _$$ServiceDistributionItemDtoImplCopyWith<$Res> {
+  __$$ServiceDistributionItemDtoImplCopyWithImpl(
+      _$ServiceDistributionItemDtoImpl _value,
+      $Res Function(_$ServiceDistributionItemDtoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ServiceDistributionItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? serviceId = null,
+    Object? serviceName = null,
+    Object? ticketsCount = null,
+    Object? completedCount = null,
+    Object? estimatedRevenue = null,
+  }) {
+    return _then(_$ServiceDistributionItemDtoImpl(
+      serviceId: null == serviceId
+          ? _value.serviceId
+          : serviceId // ignore: cast_nullable_to_non_nullable
+              as int,
+      serviceName: null == serviceName
+          ? _value.serviceName
+          : serviceName // ignore: cast_nullable_to_non_nullable
+              as String,
+      ticketsCount: null == ticketsCount
+          ? _value.ticketsCount
+          : ticketsCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      completedCount: null == completedCount
+          ? _value.completedCount
+          : completedCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      estimatedRevenue: null == estimatedRevenue
+          ? _value.estimatedRevenue
+          : estimatedRevenue // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ServiceDistributionItemDtoImpl implements _ServiceDistributionItemDto {
+  const _$ServiceDistributionItemDtoImpl(
+      {@JsonKey(name: 'service_id') required this.serviceId,
+      @JsonKey(name: 'service_name') required this.serviceName,
+      @JsonKey(name: 'tickets_count') this.ticketsCount = 0,
+      @JsonKey(name: 'completed_count') this.completedCount = 0,
+      @JsonKey(name: 'estimated_revenue') this.estimatedRevenue = 0.0});
+
+  factory _$ServiceDistributionItemDtoImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$ServiceDistributionItemDtoImplFromJson(json);
+
+  @override
+  @JsonKey(name: 'service_id')
+  final int serviceId;
+  @override
+  @JsonKey(name: 'service_name')
+  final String serviceName;
+  @override
+  @JsonKey(name: 'tickets_count')
+  final int ticketsCount;
+  @override
+  @JsonKey(name: 'completed_count')
+  final int completedCount;
+  @override
+  @JsonKey(name: 'estimated_revenue')
+  final double estimatedRevenue;
+
+  @override
+  String toString() {
+    return 'ServiceDistributionItemDto(serviceId: $serviceId, serviceName: $serviceName, ticketsCount: $ticketsCount, completedCount: $completedCount, estimatedRevenue: $estimatedRevenue)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ServiceDistributionItemDtoImpl &&
+            (identical(other.serviceId, serviceId) ||
+                other.serviceId == serviceId) &&
+            (identical(other.serviceName, serviceName) ||
+                other.serviceName == serviceName) &&
+            (identical(other.ticketsCount, ticketsCount) ||
+                other.ticketsCount == ticketsCount) &&
+            (identical(other.completedCount, completedCount) ||
+                other.completedCount == completedCount) &&
+            (identical(other.estimatedRevenue, estimatedRevenue) ||
+                other.estimatedRevenue == estimatedRevenue));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, serviceId, serviceName,
+      ticketsCount, completedCount, estimatedRevenue);
+
+  /// Create a copy of ServiceDistributionItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ServiceDistributionItemDtoImplCopyWith<_$ServiceDistributionItemDtoImpl>
+      get copyWith => __$$ServiceDistributionItemDtoImplCopyWithImpl<
+          _$ServiceDistributionItemDtoImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ServiceDistributionItemDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ServiceDistributionItemDto
+    implements ServiceDistributionItemDto {
+  const factory _ServiceDistributionItemDto(
+          {@JsonKey(name: 'service_id') required final int serviceId,
+          @JsonKey(name: 'service_name') required final String serviceName,
+          @JsonKey(name: 'tickets_count') final int ticketsCount,
+          @JsonKey(name: 'completed_count') final int completedCount,
+          @JsonKey(name: 'estimated_revenue') final double estimatedRevenue}) =
+      _$ServiceDistributionItemDtoImpl;
+
+  factory _ServiceDistributionItemDto.fromJson(Map<String, dynamic> json) =
+      _$ServiceDistributionItemDtoImpl.fromJson;
+
+  @override
+  @JsonKey(name: 'service_id')
+  int get serviceId;
+  @override
+  @JsonKey(name: 'service_name')
+  String get serviceName;
+  @override
+  @JsonKey(name: 'tickets_count')
+  int get ticketsCount;
+  @override
+  @JsonKey(name: 'completed_count')
+  int get completedCount;
+  @override
+  @JsonKey(name: 'estimated_revenue')
+  double get estimatedRevenue;
+
+  /// Create a copy of ServiceDistributionItemDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ServiceDistributionItemDtoImplCopyWith<_$ServiceDistributionItemDtoImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
 DashboardCardsDto _$DashboardCardsDtoFromJson(Map<String, dynamic> json) {
   return _DashboardCardsDto.fromJson(json);
 }

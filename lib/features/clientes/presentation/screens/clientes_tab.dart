@@ -30,6 +30,15 @@ class _ClientesTabState extends ConsumerState<ClientesTab> {
     final asyncClientes = ref.watch(clientsListProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Clientes'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => ref.invalidate(clientsListProvider),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
@@ -158,50 +167,69 @@ class _ClientCard extends StatelessWidget {
                 .withValues(alpha: 0.5),
           ),
         ),
-        child: ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          leading: InitialsAvatar(initials: client.iniciales),
-          title: Text(
-            client.nombreCompleto,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          subtitle: info.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(info, style: const TextStyle(fontSize: 13)),
-                )
-              : null,
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
             children: [
-              StatusBadge(
-                label: client.status.displayName,
-                color: client.status.color,
-              ),
-              const SizedBox(height: 6),
-              if (client.telefono != null)
-                GestureDetector(
-                  onTap: () => WhatsAppService.mostrarPlantillas(
-                    context: context,
-                    telefono: client.telefono!,
-                    nombreCliente: client.nombreCompleto,
-                  ),
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF25D366).withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
+              InitialsAvatar(initials: client.iniciales),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      client.nombreCompleto,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    child: const Icon(
-                      Icons.chat_rounded,
-                      color: Color(0xFF25D366),
-                      size: 15,
-                    ),
-                  ),
+                    if (info.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        info,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFF9CA3AF),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  StatusBadge(
+                    label: client.status.displayName,
+                    color: client.status.color,
+                  ),
+                  if (client.telefono != null) ...[
+                    const SizedBox(height: 6),
+                    GestureDetector(
+                      onTap: () => WhatsAppService.mostrarPlantillas(
+                        context: context,
+                        telefono: client.telefono!,
+                        nombreCliente: client.nombreCompleto,
+                      ),
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color:
+                              const Color(0xFF25D366).withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.chat_rounded,
+                          color: Color(0xFF25D366),
+                          size: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ],
           ),
         ),

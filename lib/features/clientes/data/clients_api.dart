@@ -11,7 +11,7 @@ class ClientsApi {
   Future<List<ClientDto>> list({
     int? branchId,
     String? search,
-    int limit = 500,
+    int limit = 100,
   }) async {
     final response = await _dio.get<List<dynamic>>(
       ApiEndpoints.clients,

@@ -10,6 +10,12 @@ import '../../features/mensajes/presentation/screens/mensajes_tab.dart';
 import '../../features/servicios/presentation/screens/servicios_screen.dart';
 import '../../features/shell/presentation/screens/app_shell.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
+import '../../features/cierre_caja/presentation/screens/cierre_caja_screen.dart';
+import '../../features/clientes/presentation/screens/clientes_tab.dart';
+import '../../features/comisiones/presentation/screens/comisiones_screen.dart';
+import '../../features/inventario/presentation/screens/inventario_screen.dart';
+import '../../features/pagos/presentation/screens/pagos_screen.dart';
+import '../../features/usuarios/presentation/screens/roles_screen.dart';
 import '../../features/ventas/presentation/screens/ventas_screen.dart';
 import 'guards.dart';
 import 'routes.dart';
@@ -65,6 +71,30 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.mensajes,
         builder: (_, __) => const MensajesScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.inventario,
+        builder: (_, __) => const InventarioScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.pagos,
+        builder: (_, __) => const PagosScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.comisiones,
+        builder: (_, __) => const ComisionesScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.cierreCaja,
+        builder: (_, __) => const CierreCajaScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.clientes,
+        builder: (_, __) => const ClientesTab(),
+      ),
+      GoRoute(
+        path: AppRoutes.roles,
+        builder: (_, __) => const RolesScreen(),
       ),
     ],
   );

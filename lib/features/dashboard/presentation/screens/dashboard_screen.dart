@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/presentation/atoms/initials_avatar.dart';
 import '../../../../core/presentation/molecules/stat_card.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../operarias/presentation/providers/operarias_provider.dart';
-import '../../../ventas/presentation/providers/sales_provider.dart';
+import '../providers/dashboard_overview_provider.dart';
 import '../widgets/category_pie_chart.dart';
 import '../widgets/revenue_bar_chart.dart';
 
@@ -15,102 +13,126 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ventas = ref.watch(salesProvider);
-    final revenue7d = ref.watch(salesByDayProvider(7));
-    final porCategoria = ref.watch(revenueByCategoryProvider);
-    final topOperarias = ref.watch(topOperariasProvider);
+    final asyncOverview = ref.watch(dashboardOverviewProvider);
+    final asyncRevenue = ref.watch(revenueSeriesProvider);
+    final asyncServices = ref.watch(serviceDistributionProvider);
 
     final fmt = NumberFormat.currency(
       locale: 'es_BO',
       symbol: 'Bs ',
       decimalDigits: 0,
     );
-    final totalSemana =
-        revenue7d.fold<double>(0, (a, d) => a + d.total);
-    final ticketPromedio = ventas.isEmpty
-        ? 0.0
-        : ventas.fold<double>(0, (a, s) => a + s.total) / ventas.length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              ref.invalidate(dashboardOverviewProvider);
+              ref.invalidate(revenueSeriesProvider);
+              ref.invalidate(serviceDistributionProvider);
+            },
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.invalidate(salesProvider);
+          ref.invalidate(dashboardOverviewProvider);
+          ref.invalidate(revenueSeriesProvider);
+          ref.invalidate(serviceDistributionProvider);
         },
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            // KPIs
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.35,
-              children: [
-                StatCard(
-                  label: 'Ingresos 7d',
-                  value: fmt.format(totalSemana),
-                  icon: Icons.trending_up,
-                  accentColor: AppColors.brandPrimary,
-                ),
-                StatCard(
-                  label: 'Ventas 7d',
-                  value: '${ventas.where((s) {
-                    final delta = DateTime.now().difference(s.fecha).inDays;
-                    return delta <= 6;
-                  }).length}',
-                  icon: Icons.receipt_long,
-                  accentColor: AppColors.brandAccent,
-                ),
-                StatCard(
-                  label: 'Ticket promedio',
-                  value: fmt.format(ticketPromedio),
-                  icon: Icons.payments_outlined,
-                  accentColor: AppColors.statusReserva,
-                ),
-                StatCard(
-                  label: 'Total ventas',
-                  value: '${ventas.length}',
-                  icon: Icons.shopping_bag_outlined,
-                  accentColor: AppColors.statusEnEspera,
-                ),
-              ],
+            // ── KPIs ──────────────────────────────────────────────────────
+            asyncOverview.when(
+              loading: () => const _KpiShimmer(),
+              error: (_, __) => const _KpiError(),
+              data: (overview) => GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.35,
+                children: [
+                  StatCard(
+                    label: 'Ingresos cobrados',
+                    value: fmt.format(overview.paymentsPaidTotal),
+                    icon: Icons.trending_up,
+                    accentColor: AppColors.brandPrimary,
+                  ),
+                  StatCard(
+                    label: 'Atendidas',
+                    value: '${overview.appointmentsCompleted}',
+                    icon: Icons.check_circle_outline,
+                    accentColor: AppColors.onlineGreen,
+                  ),
+                  StatCard(
+                    label: 'Pendientes',
+                    value: '${overview.appointmentsPending}',
+                    icon: Icons.schedule_outlined,
+                    accentColor: AppColors.statusEnEspera,
+                  ),
+                  StatCard(
+                    label: 'Clientes',
+                    value: '${overview.clientsTotal}',
+                    icon: Icons.people_outline,
+                    accentColor: AppColors.statusReserva,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
 
-            // Bar chart de los últimos 7 días
+            // ── Ingresos por período ──────────────────────────────────────
             _SectionCard(
-              title: 'Ingresos últimos 7 días',
-              child: RevenueBarChart(data: revenue7d),
-            ),
-            const SizedBox(height: 16),
-
-            // Pie de categorías
-            _SectionCard(
-              title: 'Distribución por categoría',
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: CategoryPieChart(data: porCategoria),
+              title: 'Ingresos por período',
+              child: asyncRevenue.when(
+                loading: () => const SizedBox(
+                  height: 160,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                error: (_, __) => const _ChartError(),
+                data: (points) => points.isEmpty
+                    ? const _EmptyChart(label: 'Sin datos de ingresos')
+                    : RevenueBarChart(data: points),
               ),
             ),
             const SizedBox(height: 16),
 
-            // Top operarias
+            // ── Distribución por servicio ─────────────────────────────────
             _SectionCard(
-              title: 'Top operarias',
-              child: Column(
-                children: [
-                  for (var i = 0; i < topOperarias.length; i++)
-                    _OperariaRankRow(
-                      ranking: i + 1,
-                      operariaId: topOperarias[i].operariaId,
-                      total: topOperarias[i].total,
-                      ventas: topOperarias[i].ventas,
-                    ),
-                ],
+              title: 'Distribución por servicio',
+              child: asyncServices.when(
+                loading: () => const SizedBox(
+                  height: 130,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                error: (_, __) => const _ChartError(),
+                data: (data) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CategoryPieChart(data: data),
+                ),
               ),
+            ),
+
+            // ── Alertas de stock ──────────────────────────────────────────
+            asyncOverview.maybeWhen(
+              data: (overview) => overview.lowStockItems > 0
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: _AlertBanner(
+                        icon: Icons.inventory_2_outlined,
+                        label:
+                            '${overview.lowStockItems} productos con stock bajo',
+                        color: AppColors.statusEnEspera,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+              orElse: () => const SizedBox.shrink(),
             ),
           ],
         ),
@@ -118,6 +140,8 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 }
+
+// ─── Section card ─────────────────────────────────────────────────────────────
 
 class _SectionCard extends StatelessWidget {
   const _SectionCard({required this.title, required this.child});
@@ -132,9 +156,10 @@ class _SectionCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
         side: BorderSide(
-          color: Theme.of(context).colorScheme.outlineVariant.withValues(
-                alpha: 0.4,
-              ),
+          color: Theme.of(context)
+              .colorScheme
+              .outlineVariant
+              .withValues(alpha: 0.4),
         ),
       ),
       child: Padding(
@@ -158,76 +183,113 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
-class _OperariaRankRow extends ConsumerWidget {
-  const _OperariaRankRow({
-    required this.ranking,
-    required this.operariaId,
-    required this.total,
-    required this.ventas,
-  });
+// ─── Loading / error placeholders ─────────────────────────────────────────────
 
-  final int ranking;
-  final int operariaId;
-  final double total;
-  final int ventas;
+class _KpiShimmer extends StatelessWidget {
+  const _KpiShimmer();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final operaria = ref.watch(operariaByIdProvider(operariaId));
-    final fmt = NumberFormat.currency(
-      locale: 'es_BO',
-      symbol: 'Bs ',
-      decimalDigits: 0,
+  Widget build(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
+      childAspectRatio: 1.35,
+      children: List.generate(
+        4,
+        (_) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.darkCard,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: const Center(child: CircularProgressIndicator()),
+        ),
+      ),
     );
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+  }
+}
+
+class _KpiError extends StatelessWidget {
+  const _KpiError();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 80,
+      alignment: Alignment.center,
+      child: const Text(
+        'Error al cargar KPIs',
+        style: TextStyle(color: Color(0xFF6B7280)),
+      ),
+    );
+  }
+}
+
+class _ChartError extends StatelessWidget {
+  const _ChartError();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      height: 80,
+      child: Center(
+        child: Text(
+          'No disponible',
+          style: TextStyle(color: Color(0xFF6B7280)),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyChart extends StatelessWidget {
+  const _EmptyChart({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 80,
+      child: Center(
+        child: Text(label, style: const TextStyle(color: Color(0xFF6B7280))),
+      ),
+    );
+  }
+}
+
+class _AlertBanner extends StatelessWidget {
+  const _AlertBanner({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
       child: Row(
         children: [
-          Container(
-            width: 28,
-            height: 28,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.brandPrimary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              '$ranking',
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                color: AppColors.brandPrimary,
-              ),
-            ),
-          ),
+          Icon(icon, color: color, size: 20),
           const SizedBox(width: 10),
-          InitialsAvatar(
-            initials: operaria?.iniciales ?? '?',
-            size: 32,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  operaria?.nombreCompleto ?? '—',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  '$ventas ${ventas == 1 ? "venta" : "ventas"}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
-                ),
-              ],
-            ),
-          ),
           Text(
-            fmt.format(total),
-            style: const TextStyle(
-              fontWeight: FontWeight.w800,
-              color: AppColors.brandPrimary,
+            label,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
             ),
           ),
         ],

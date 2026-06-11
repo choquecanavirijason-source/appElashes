@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,7 +31,9 @@ class AsyncValueView<T> extends StatelessWidget {
       error: (error, _) {
         final message = error is ApiException
             ? error.message
-            : 'Ocurrió un error inesperado.';
+            : (error is DioException && error.error is ApiException)
+                ? (error.error as ApiException).message
+                : 'Ocurrió un error inesperado.';
         return EmptyState(
           icon: Icons.error_outline,
           title: 'No pudimos cargar la información',

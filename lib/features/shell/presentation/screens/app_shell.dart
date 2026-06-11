@@ -1,35 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../admin/presentation/screens/admin_tab.dart';
 import '../../../inicio/presentation/screens/inicio_tab.dart';
 import '../../../operarias/presentation/screens/operarias_tab.dart';
+import '../../../perfil/presentation/screens/perfil_tab.dart';
 import '../../../sucursales/presentation/screens/sucursales_tab.dart';
+import '../providers/shell_tab_provider.dart';
 
-class AppShell extends StatefulWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({super.key});
-
-  @override
-  State<AppShell> createState() => _AppShellState();
-}
-
-class _AppShellState extends State<AppShell> {
-  int _index = 0;
 
   static const _tabs = <Widget>[
     InicioTab(),
     SucursalesTab(),
     EquipoTab(),
     AdminTab(),
+    PerfilTab(),
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _index, children: _tabs),
-      bottomNavigationBar: _BottomNav(
-        selectedIndex: _index,
-        onTap: (i) => setState(() => _index = i),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final index = ref.watch(shellTabProvider);
+
+    return PopScope(
+      canPop: index == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          ref.read(shellTabProvider.notifier).state = 0;
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(index: index, children: _tabs),
+        bottomNavigationBar: _BottomNav(
+          selectedIndex: index,
+          onTap: (i) => ref.read(shellTabProvider.notifier).state = i,
+        ),
       ),
     );
   }
@@ -74,6 +81,12 @@ class _BottomNav extends StatelessWidget {
             selected: selectedIndex == 3,
             onTap: () => onTap(3),
           ),
+          _NavItem(
+            icon: Icons.person_outline,
+            label: 'Perfil',
+            selected: selectedIndex == 4,
+            onTap: () => onTap(4),
+          ),
         ],
       ),
     );
@@ -99,7 +112,7 @@ class _NavItem extends StatelessWidget {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.goldAccent,
             borderRadius: BorderRadius.circular(24),
@@ -126,7 +139,7 @@ class _NavItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

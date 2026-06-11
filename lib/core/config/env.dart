@@ -19,11 +19,11 @@ class Env {
   }
 
   static Duration get connectTimeout =>
-      _durationFromEnv('API_CONNECT_TIMEOUT_MS', defaultMs: 15000);
+      _durationFromEnv('CONNECT_TIMEOUT_MS', defaultMs: 15000);
   static Duration get receiveTimeout =>
-      _durationFromEnv('API_RECEIVE_TIMEOUT_MS', defaultMs: 20000);
+      _durationFromEnv('RECEIVE_TIMEOUT_MS', defaultMs: 30000);
   static Duration get sendTimeout =>
-      _durationFromEnv('API_SEND_TIMEOUT_MS', defaultMs: 20000);
+      _durationFromEnv('SEND_TIMEOUT_MS', defaultMs: 30000);
 
   static bool get isDevelopment {
     final raw = dotenv.maybeGet('APP_ENV')?.toLowerCase() ?? 'development';

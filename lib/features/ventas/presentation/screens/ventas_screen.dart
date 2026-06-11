@@ -1,69 +1,105 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/presentation/atoms/initials_avatar.dart';
-import '../../../../core/presentation/atoms/status_badge.dart';
+import '../../../../core/error/api_exception.dart';
+import '../../../../core/presentation/organisms/async_value_view.dart';
+import '../../../../core/presentation/organisms/confirm_dialog.dart';
 import '../../../../core/presentation/organisms/empty_state.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../clientes/presentation/providers/clients_provider.dart';
-import '../../../operarias/presentation/providers/operarias_provider.dart';
-import '../../domain/entities/sale.dart';
-import '../providers/sales_provider.dart';
-import '../widgets/sale_form_sheet.dart';
+import '../../data/pos_sales_repository_impl.dart';
+import '../providers/pos_sales_provider.dart';
 
 class VentasScreen extends ConsumerWidget {
   const VentasScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ventas = ref.watch(salesProvider);
-    final now = DateTime.now();
-    final hoy = DateTime(now.year, now.month, now.day);
-
-    final totalHoy = ventas.where((s) {
-      return s.fecha.year == hoy.year &&
-          s.fecha.month == hoy.month &&
-          s.fecha.day == hoy.day;
-    }).fold<double>(0, (a, s) => a + s.total);
-
-    final countHoy = ventas.where((s) {
-      return s.fecha.year == hoy.year &&
-          s.fecha.month == hoy.month &&
-          s.fecha.day == hoy.day;
-    }).length;
+    final asyncVentas = ref.watch(posSalesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Ventas')),
-      body: Column(
-        children: [
-          _HeaderTotal(total: totalHoy, count: countHoy),
-          Expanded(
-            child: ventas.isEmpty
-                ? const EmptyState(
-                    icon: Icons.point_of_sale,
-                    title: 'Sin ventas',
-                    message: 'Registra la primera con +.',
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
-                    itemCount: ventas.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (_, i) => _SaleCard(sale: ventas[i]),
-                  ),
+      appBar: AppBar(
+        title: const Text('Ventas POS'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => ref.read(posSalesProvider.notifier).refresh(),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppColors.brandPrimary,
-        foregroundColor: Colors.white,
-        onPressed: () => SaleFormSheet.show(context),
-        icon: const Icon(Icons.point_of_sale),
-        label: const Text('Nueva venta'),
+      body: AsyncValueView<List<PosSale>>(
+        value: asyncVentas,
+        onRetry: () => ref.invalidate(posSalesProvider),
+        builder: (ventas) {
+          final now = DateTime.now();
+          final hoy = DateTime(now.year, now.month, now.day);
+          final ventasHoy = ventas.where((v) {
+            final d = v.createdAt;
+            return d.year == hoy.year && d.month == hoy.month && d.day == hoy.day;
+          }).toList();
+          final totalHoy = ventasHoy.fold<double>(0, (a, v) => a + v.total);
+
+          if (ventas.isEmpty) {
+            return const EmptyState(
+              icon: Icons.point_of_sale,
+              title: 'Sin ventas',
+              message: 'Las ventas POS registradas aparecerán aquí.',
+            );
+          }
+
+          return Column(
+            children: [
+              _HeaderTotal(total: totalHoy, count: ventasHoy.length),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 88),
+                  itemCount: ventas.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (_, i) => _SaleCard(
+                    sale: ventas[i],
+                    onCancel: ventas[i].isCancelled
+                        ? null
+                        : () => _onCancel(context, ref, ventas[i]),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
+
+  Future<void> _onCancel(
+    BuildContext context,
+    WidgetRef ref,
+    PosSale sale,
+  ) async {
+    final confirmed = await ConfirmDialog.show(
+      context,
+      title: 'Cancelar venta',
+      message: '¿Cancelar la venta ${sale.saleCode} de ${sale.clientName}?',
+      confirmLabel: 'Cancelar venta',
+      destructive: true,
+    );
+    if (!confirmed || !context.mounted) return;
+
+    try {
+      await ref.read(posSalesProvider.notifier).cancelSale(sale.id);
+    } on ApiException catch (e) {
+      developer.log('Error al cancelar venta', name: 'ventas', error: e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message)),
+        );
+      }
+    }
+  }
 }
+
+// ─── Header ──────────────────────────────────────────────────────────────────
 
 class _HeaderTotal extends StatelessWidget {
   const _HeaderTotal({required this.total, required this.count});
@@ -73,24 +109,19 @@ class _HeaderTotal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = NumberFormat.currency(
-      locale: 'es_BO',
-      symbol: 'Bs ',
-      decimalDigits: 2,
-    );
+    final fmt = NumberFormat.currency(locale: 'es_BO', symbol: 'Bs ', decimalDigits: 2);
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.brandPrimary, AppColors.brandAccent],
+          colors: [AppColors.brandPrimary, Color(0xFF0D5C3A)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
@@ -98,7 +129,7 @@ class _HeaderTotal extends StatelessWidget {
               children: [
                 const Text(
                   'Ingresos de hoy',
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  style: TextStyle(color: Colors.white60, fontSize: 13),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -113,14 +144,13 @@ class _HeaderTotal extends StatelessWidget {
             ),
           ),
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: Colors.white.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(99),
             ),
             child: Text(
-              '$count ${count == 1 ? "venta" : "ventas"}',
+              '$count ${count == 1 ? 'venta' : 'ventas'}',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -134,118 +164,145 @@ class _HeaderTotal extends StatelessWidget {
   }
 }
 
-class _SaleCard extends ConsumerWidget {
-  const _SaleCard({required this.sale});
+// ─── Sale card ────────────────────────────────────────────────────────────────
 
-  final Sale sale;
+class _SaleCard extends StatelessWidget {
+  const _SaleCard({required this.sale, this.onCancel});
+
+  final PosSale sale;
+  final VoidCallback? onCancel;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final cliente = sale.clienteId == null
-        ? null
-        : ref.watch(clientByIdProvider(sale.clienteId!));
-    final operaria = ref.watch(operariaByIdProvider(sale.operariaId));
-    final fechaFmt = DateFormat('d MMM · HH:mm', 'es').format(sale.fecha);
-    final totalFmt = NumberFormat.currency(
-      locale: 'es_BO',
-      symbol: 'Bs ',
-      decimalDigits: 2,
-    ).format(sale.total);
+  Widget build(BuildContext context) {
+    final fmt = NumberFormat.currency(locale: 'es_BO', symbol: 'Bs ', decimalDigits: 2);
+    final fechaFmt = DateFormat('d MMM · HH:mm', 'es_BO').format(sale.createdAt);
+    final isCancelled = sale.isCancelled;
+    final methodLabel = _methodLabel(sale.paymentMethod);
+    final methodColor = _methodColor(sale.paymentMethod);
 
-    return Card(
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.darkCard,
         borderRadius: BorderRadius.circular(14),
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.outlineVariant.withValues(
-                alpha: 0.5,
-              ),
+        border: Border.all(
+          color: isCancelled
+              ? AppColors.offlineRed.withValues(alpha: 0.3)
+              : AppColors.darkCardElevated,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    sale.categoriaPrincipal,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                    ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  sale.clientName,
+                  style: TextStyle(
+                    color: isCancelled ? Colors.white38 : Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    decoration: isCancelled ? TextDecoration.lineThrough : null,
                   ),
                 ),
-                Text(
-                  totalFmt,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.brandPrimary,
-                  ),
+              ),
+              Text(
+                fmt.format(sale.total),
+                style: TextStyle(
+                  color: isCancelled ? Colors.white38 : AppColors.brandAccent,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
                 ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              fechaFmt,
-              style: const TextStyle(fontSize: 12, color: Colors.black54),
-            ),
-            const Divider(height: 18),
-            Row(
-              children: [
-                InitialsAvatar(
-                  initials: operaria?.iniciales ?? '?',
-                  size: 28,
-                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Text(
+                fechaFmt,
+                style: const TextStyle(color: Color(0xFF6B7280), fontSize: 12),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '· ${sale.saleCode}',
+                style: const TextStyle(color: Color(0xFF4B5563), fontSize: 11),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              _StatusPill(
+                label: isCancelled ? 'Cancelada' : 'Pagada',
+                color: isCancelled ? AppColors.offlineRed : AppColors.onlineGreen,
+              ),
+              const SizedBox(width: 8),
+              _StatusPill(label: methodLabel, color: methodColor),
+              if (sale.createdByUsername != null) ...[
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    operaria?.nombreCompleto ?? '—',
-                    style: const TextStyle(fontSize: 13),
+                    sale.createdByUsername!,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Color(0xFF6B7280), fontSize: 11),
                   ),
-                ),
-                StatusBadge(
-                  label: sale.metodoPago.label,
-                  color: sale.metodoPago.color,
-                  icon: sale.metodoPago.icon,
                 ),
               ],
-            ),
-            if (cliente != null) ...[
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.person_outline,
-                    size: 14,
-                    color: Colors.black54,
+              if (onCancel != null)
+                GestureDetector(
+                  onTap: onCancel,
+                  child: const Icon(
+                    Icons.cancel_outlined,
+                    color: Color(0xFF6B7280),
+                    size: 20,
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    cliente.nombreCompleto,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            if (sale.descuento > 0) ...[
-              const SizedBox(height: 6),
-              Text(
-                'Descuento aplicado: Bs ${sale.descuento.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppColors.statusCancelado,
-                  fontStyle: FontStyle.italic,
                 ),
-              ),
             ],
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _methodLabel(String method) => switch (method) {
+        'cash' => 'Efectivo',
+        'card' => 'Tarjeta',
+        'transfer' => 'Transferencia',
+        'qr' => 'QR',
+        _ => method,
+      };
+
+  Color _methodColor(String method) => switch (method) {
+        'cash' => AppColors.onlineGreen,
+        'card' => AppColors.statusEnServicio,
+        'transfer' => AppColors.statusReserva,
+        'qr' => AppColors.goldAccent,
+        _ => AppColors.statusSinEstado,
+      };
+}
+
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

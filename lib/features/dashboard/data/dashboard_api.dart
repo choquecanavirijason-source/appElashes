@@ -14,4 +14,26 @@ class DashboardApi {
     );
     return DashboardOverviewDto.fromJson(response.data!);
   }
+
+  Future<List<RevenueSeriesItemDto>> getRevenueSeries() async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      ApiEndpoints.dashboardRevenueSeries,
+    );
+    final items = (response.data?['series'] as List<dynamic>?) ?? [];
+    return items
+        .cast<Map<String, dynamic>>()
+        .map(RevenueSeriesItemDto.fromJson)
+        .toList();
+  }
+
+  Future<List<ServiceDistributionItemDto>> getServiceDistribution() async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      ApiEndpoints.dashboardServiceDistribution,
+    );
+    final items = (response.data?['rows'] as List<dynamic>?) ?? [];
+    return items
+        .cast<Map<String, dynamic>>()
+        .map(ServiceDistributionItemDto.fromJson)
+        .toList();
+  }
 }
