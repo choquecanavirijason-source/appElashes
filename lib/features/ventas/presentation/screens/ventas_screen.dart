@@ -11,6 +11,7 @@ import '../../../../core/presentation/organisms/empty_state.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../data/pos_sales_repository_impl.dart';
 import '../providers/pos_sales_provider.dart';
+import '../widgets/sale_form_sheet.dart';
 
 class VentasScreen extends ConsumerWidget {
   const VentasScreen({super.key});
@@ -28,6 +29,13 @@ class VentasScreen extends ConsumerWidget {
             onPressed: () => ref.read(posSalesProvider.notifier).refresh(),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => SaleFormSheet.show(context),
+        icon: const Icon(Icons.add),
+        label: const Text('Nueva venta'),
+        backgroundColor: AppColors.goldAccent,
+        foregroundColor: Colors.black87,
       ),
       body: AsyncValueView<List<PosSale>>(
         value: asyncVentas,
@@ -62,6 +70,7 @@ class VentasScreen extends ConsumerWidget {
                     onCancel: ventas[i].isCancelled
                         ? null
                         : () => _onCancel(context, ref, ventas[i]),
+                    onEdit: () => SaleFormSheet.show(context, sale: ventas[i]),
                   ),
                 ),
               ),
@@ -167,10 +176,11 @@ class _HeaderTotal extends StatelessWidget {
 // ─── Sale card ────────────────────────────────────────────────────────────────
 
 class _SaleCard extends StatelessWidget {
-  const _SaleCard({required this.sale, this.onCancel});
+  const _SaleCard({required this.sale, this.onCancel, this.onEdit});
 
   final PosSale sale;
   final VoidCallback? onCancel;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -180,21 +190,12 @@ class _SaleCard extends StatelessWidget {
     final methodLabel = _methodLabel(sale.paymentMethod);
     final methodColor = _methodColor(sale.paymentMethod);
 
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.darkCard,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isCancelled
-              ? AppColors.offlineRed.withValues(alpha: 0.3)
-              : AppColors.darkCardElevated,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    final cardContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: onEdit,
+          child: Row(
             children: [
               Expanded(
                 child: Text(
@@ -217,8 +218,11 @@ class _SaleCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          Row(
+        ),
+        const SizedBox(height: 4),
+        GestureDetector(
+          onTap: onEdit,
+          child: Row(
             children: [
               Text(
                 fechaFmt,
@@ -231,38 +235,64 @@ class _SaleCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              _StatusPill(
-                label: isCancelled ? 'Cancelada' : 'Pagada',
-                color: isCancelled ? AppColors.offlineRed : AppColors.onlineGreen,
-              ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            _StatusPill(
+              label: isCancelled ? 'Cancelada' : 'Pagada',
+              color: isCancelled ? AppColors.offlineRed : AppColors.onlineGreen,
+            ),
+            const SizedBox(width: 8),
+            _StatusPill(label: methodLabel, color: methodColor),
+            if (sale.createdByUsername != null) ...[
               const SizedBox(width: 8),
-              _StatusPill(label: methodLabel, color: methodColor),
-              if (sale.createdByUsername != null) ...[
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    sale.createdByUsername!,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Color(0xFF6B7280), fontSize: 11),
-                  ),
+              Expanded(
+                child: Text(
+                  sale.createdByUsername!,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Color(0xFF6B7280), fontSize: 11),
                 ),
-              ],
-              if (onCancel != null)
-                GestureDetector(
-                  onTap: onCancel,
-                  child: const Icon(
-                    Icons.cancel_outlined,
-                    color: Color(0xFF6B7280),
+              ),
+            ],
+            if (onEdit != null && !isCancelled)
+              GestureDetector(
+                onTap: onEdit,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Icon(
+                    Icons.edit_outlined,
+                    color: AppColors.goldAccent,
                     size: 20,
                   ),
                 ),
-            ],
-          ),
-        ],
+              ),
+            if (onCancel != null)
+              GestureDetector(
+                onTap: onCancel,
+                child: const Icon(
+                  Icons.cancel_outlined,
+                  color: Color(0xFF6B7280),
+                  size: 20,
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.darkCard,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isCancelled
+              ? AppColors.offlineRed.withValues(alpha: 0.3)
+              : AppColors.darkCardElevated,
+        ),
       ),
+      child: cardContent,
     );
   }
 

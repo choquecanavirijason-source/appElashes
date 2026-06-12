@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../shell/presentation/providers/shell_tab_provider.dart';
+import '../../../ventas/presentation/widgets/sale_form_sheet.dart';
 
 class AdminTab extends ConsumerWidget {
   const AdminTab({super.key});
@@ -105,6 +106,14 @@ class AdminTab extends ConsumerWidget {
                   onTap: () =>
                       ref.read(shellTabProvider.notifier).state = 2,
                 ),
+                _GridCard(
+                  iconBg: AppColors.iconBgGreen,
+                  iconColor: AppColors.goldAccent,
+                  icon: Icons.add_card_outlined,
+                  title: 'Registrar venta',
+                  subtitle: 'Agregar servicios y cobrar',
+                  onTap: () => SaleFormSheet.show(context),
+                ),
               ],
             ),
             const SizedBox(height: 24),
@@ -154,8 +163,48 @@ class AdminTab extends ConsumerWidget {
               title: 'Configuración',
               subtitle: 'APIs, integraciones y ajustes',
             ),
+            const SizedBox(height: 24),
+            // Floating-style button for direct access to the sale form (new or edit)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.goldAccent,
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                leading: const Icon(Icons.point_of_sale, color: Colors.black87, size: 28),
+                title: const Text(
+                  'Registrar / Editar Venta',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                ),
+                subtitle: const Text(
+                  'Acceso directo al formulario de venta',
+                  style: TextStyle(color: Colors.black54, fontSize: 12),
+                ),
+                onTap: () => SaleFormSheet.show(context),
+              ),
+            ),
+            const SizedBox(height: 16),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => SaleFormSheet.show(context),
+        backgroundColor: AppColors.goldAccent,
+        foregroundColor: Colors.black87,
+        child: const Icon(Icons.add),
       ),
     );
   }

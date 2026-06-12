@@ -52,9 +52,12 @@ class PosSaleItemCreateDto with _$PosSaleItemCreateDto {
   const factory PosSaleItemCreateDto({
     @JsonKey(name: 'service_id') required int serviceId,
     @JsonKey(name: 'professional_id') int? professionalId,
+    @JsonKey(name: 'is_ia') @Default(false) bool isIa,
     @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime endTime,
     @JsonKey(name: 'branch_id') int? branchId,
+    double? price,
+    int? quantity,
   }) = _PosSaleItemCreateDto;
   factory PosSaleItemCreateDto.fromJson(Map<String, dynamic> json) =>
       _$PosSaleItemCreateDtoFromJson(json);
@@ -70,6 +73,7 @@ class PosSaleCreateDto with _$PosSaleCreateDto {
     @JsonKey(name: 'discount_value') @Default(0.0) double discountValue,
     String? notes,
     required List<PosSaleItemCreateDto> items,
+    @JsonKey(name: 'link_appointment_id') int? linkAppointmentId,
     @JsonKey(name: 'sale_without_appointments') @Default(false) bool saleWithoutAppointments,
   }) = _PosSaleCreateDto;
   factory PosSaleCreateDto.fromJson(Map<String, dynamic> json) =>

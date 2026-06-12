@@ -82,9 +82,12 @@ _$PosSaleItemCreateDtoImpl _$$PosSaleItemCreateDtoImplFromJson(
     _$PosSaleItemCreateDtoImpl(
       serviceId: (json['service_id'] as num).toInt(),
       professionalId: (json['professional_id'] as num?)?.toInt(),
+      isIa: json['is_ia'] as bool? ?? false,
       startTime: DateTime.parse(json['start_time'] as String),
       endTime: DateTime.parse(json['end_time'] as String),
       branchId: (json['branch_id'] as num?)?.toInt(),
+      price: (json['price'] as num?)?.toDouble(),
+      quantity: (json['quantity'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$PosSaleItemCreateDtoImplToJson(
@@ -92,9 +95,12 @@ Map<String, dynamic> _$$PosSaleItemCreateDtoImplToJson(
     <String, dynamic>{
       'service_id': instance.serviceId,
       'professional_id': instance.professionalId,
+      'is_ia': instance.isIa,
       'start_time': instance.startTime.toIso8601String(),
       'end_time': instance.endTime.toIso8601String(),
       'branch_id': instance.branchId,
+      'price': instance.price,
+      'quantity': instance.quantity,
     };
 
 _$PosSaleCreateDtoImpl _$$PosSaleCreateDtoImplFromJson(
@@ -109,6 +115,7 @@ _$PosSaleCreateDtoImpl _$$PosSaleCreateDtoImplFromJson(
       items: (json['items'] as List<dynamic>)
           .map((e) => PosSaleItemCreateDto.fromJson(e as Map<String, dynamic>))
           .toList(),
+      linkAppointmentId: (json['link_appointment_id'] as num?)?.toInt(),
       saleWithoutAppointments:
           json['sale_without_appointments'] as bool? ?? false,
     );
@@ -123,5 +130,6 @@ Map<String, dynamic> _$$PosSaleCreateDtoImplToJson(
       'discount_value': instance.discountValue,
       'notes': instance.notes,
       'items': instance.items,
+      'link_appointment_id': instance.linkAppointmentId,
       'sale_without_appointments': instance.saleWithoutAppointments,
     };

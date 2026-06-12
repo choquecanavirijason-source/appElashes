@@ -910,12 +910,16 @@ mixin _$PosSaleItemCreateDto {
   int get serviceId => throw _privateConstructorUsedError;
   @JsonKey(name: 'professional_id')
   int? get professionalId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_ia')
+  bool get isIa => throw _privateConstructorUsedError;
   @JsonKey(name: 'start_time')
   DateTime get startTime => throw _privateConstructorUsedError;
   @JsonKey(name: 'end_time')
   DateTime get endTime => throw _privateConstructorUsedError;
   @JsonKey(name: 'branch_id')
   int? get branchId => throw _privateConstructorUsedError;
+  double? get price => throw _privateConstructorUsedError;
+  int? get quantity => throw _privateConstructorUsedError;
 
   /// Serializes this PosSaleItemCreateDto to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -936,9 +940,12 @@ abstract class $PosSaleItemCreateDtoCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'service_id') int serviceId,
       @JsonKey(name: 'professional_id') int? professionalId,
+      @JsonKey(name: 'is_ia') bool isIa,
       @JsonKey(name: 'start_time') DateTime startTime,
       @JsonKey(name: 'end_time') DateTime endTime,
-      @JsonKey(name: 'branch_id') int? branchId});
+      @JsonKey(name: 'branch_id') int? branchId,
+      double? price,
+      int? quantity});
 }
 
 /// @nodoc
@@ -959,9 +966,12 @@ class _$PosSaleItemCreateDtoCopyWithImpl<$Res,
   $Res call({
     Object? serviceId = null,
     Object? professionalId = freezed,
+    Object? isIa = null,
     Object? startTime = null,
     Object? endTime = null,
     Object? branchId = freezed,
+    Object? price = freezed,
+    Object? quantity = freezed,
   }) {
     return _then(_value.copyWith(
       serviceId: null == serviceId
@@ -972,6 +982,10 @@ class _$PosSaleItemCreateDtoCopyWithImpl<$Res,
           ? _value.professionalId
           : professionalId // ignore: cast_nullable_to_non_nullable
               as int?,
+      isIa: null == isIa
+          ? _value.isIa
+          : isIa // ignore: cast_nullable_to_non_nullable
+              as bool,
       startTime: null == startTime
           ? _value.startTime
           : startTime // ignore: cast_nullable_to_non_nullable
@@ -983,6 +997,14 @@ class _$PosSaleItemCreateDtoCopyWithImpl<$Res,
       branchId: freezed == branchId
           ? _value.branchId
           : branchId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      price: freezed == price
+          ? _value.price
+          : price // ignore: cast_nullable_to_non_nullable
+              as double?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
               as int?,
     ) as $Val);
   }
@@ -999,9 +1021,12 @@ abstract class _$$PosSaleItemCreateDtoImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'service_id') int serviceId,
       @JsonKey(name: 'professional_id') int? professionalId,
+      @JsonKey(name: 'is_ia') bool isIa,
       @JsonKey(name: 'start_time') DateTime startTime,
       @JsonKey(name: 'end_time') DateTime endTime,
-      @JsonKey(name: 'branch_id') int? branchId});
+      @JsonKey(name: 'branch_id') int? branchId,
+      double? price,
+      int? quantity});
 }
 
 /// @nodoc
@@ -1019,9 +1044,12 @@ class __$$PosSaleItemCreateDtoImplCopyWithImpl<$Res>
   $Res call({
     Object? serviceId = null,
     Object? professionalId = freezed,
+    Object? isIa = null,
     Object? startTime = null,
     Object? endTime = null,
     Object? branchId = freezed,
+    Object? price = freezed,
+    Object? quantity = freezed,
   }) {
     return _then(_$PosSaleItemCreateDtoImpl(
       serviceId: null == serviceId
@@ -1032,6 +1060,10 @@ class __$$PosSaleItemCreateDtoImplCopyWithImpl<$Res>
           ? _value.professionalId
           : professionalId // ignore: cast_nullable_to_non_nullable
               as int?,
+      isIa: null == isIa
+          ? _value.isIa
+          : isIa // ignore: cast_nullable_to_non_nullable
+              as bool,
       startTime: null == startTime
           ? _value.startTime
           : startTime // ignore: cast_nullable_to_non_nullable
@@ -1044,6 +1076,14 @@ class __$$PosSaleItemCreateDtoImplCopyWithImpl<$Res>
           ? _value.branchId
           : branchId // ignore: cast_nullable_to_non_nullable
               as int?,
+      price: freezed == price
+          ? _value.price
+          : price // ignore: cast_nullable_to_non_nullable
+              as double?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -1054,9 +1094,12 @@ class _$PosSaleItemCreateDtoImpl implements _PosSaleItemCreateDto {
   const _$PosSaleItemCreateDtoImpl(
       {@JsonKey(name: 'service_id') required this.serviceId,
       @JsonKey(name: 'professional_id') this.professionalId,
+      @JsonKey(name: 'is_ia') this.isIa = false,
       @JsonKey(name: 'start_time') required this.startTime,
       @JsonKey(name: 'end_time') required this.endTime,
-      @JsonKey(name: 'branch_id') this.branchId});
+      @JsonKey(name: 'branch_id') this.branchId,
+      this.price,
+      this.quantity});
 
   factory _$PosSaleItemCreateDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$PosSaleItemCreateDtoImplFromJson(json);
@@ -1068,6 +1111,9 @@ class _$PosSaleItemCreateDtoImpl implements _PosSaleItemCreateDto {
   @JsonKey(name: 'professional_id')
   final int? professionalId;
   @override
+  @JsonKey(name: 'is_ia')
+  final bool isIa;
+  @override
   @JsonKey(name: 'start_time')
   final DateTime startTime;
   @override
@@ -1076,10 +1122,14 @@ class _$PosSaleItemCreateDtoImpl implements _PosSaleItemCreateDto {
   @override
   @JsonKey(name: 'branch_id')
   final int? branchId;
+  @override
+  final double? price;
+  @override
+  final int? quantity;
 
   @override
   String toString() {
-    return 'PosSaleItemCreateDto(serviceId: $serviceId, professionalId: $professionalId, startTime: $startTime, endTime: $endTime, branchId: $branchId)';
+    return 'PosSaleItemCreateDto(serviceId: $serviceId, professionalId: $professionalId, isIa: $isIa, startTime: $startTime, endTime: $endTime, branchId: $branchId, price: $price, quantity: $quantity)';
   }
 
   @override
@@ -1091,17 +1141,21 @@ class _$PosSaleItemCreateDtoImpl implements _PosSaleItemCreateDto {
                 other.serviceId == serviceId) &&
             (identical(other.professionalId, professionalId) ||
                 other.professionalId == professionalId) &&
+            (identical(other.isIa, isIa) || other.isIa == isIa) &&
             (identical(other.startTime, startTime) ||
                 other.startTime == startTime) &&
             (identical(other.endTime, endTime) || other.endTime == endTime) &&
             (identical(other.branchId, branchId) ||
-                other.branchId == branchId));
+                other.branchId == branchId) &&
+            (identical(other.price, price) || other.price == price) &&
+            (identical(other.quantity, quantity) ||
+                other.quantity == quantity));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, serviceId, professionalId, startTime, endTime, branchId);
+  int get hashCode => Object.hash(runtimeType, serviceId, professionalId, isIa,
+      startTime, endTime, branchId, price, quantity);
 
   /// Create a copy of PosSaleItemCreateDto
   /// with the given fields replaced by the non-null parameter values.
@@ -1123,12 +1177,14 @@ class _$PosSaleItemCreateDtoImpl implements _PosSaleItemCreateDto {
 
 abstract class _PosSaleItemCreateDto implements PosSaleItemCreateDto {
   const factory _PosSaleItemCreateDto(
-          {@JsonKey(name: 'service_id') required final int serviceId,
-          @JsonKey(name: 'professional_id') final int? professionalId,
-          @JsonKey(name: 'start_time') required final DateTime startTime,
-          @JsonKey(name: 'end_time') required final DateTime endTime,
-          @JsonKey(name: 'branch_id') final int? branchId}) =
-      _$PosSaleItemCreateDtoImpl;
+      {@JsonKey(name: 'service_id') required final int serviceId,
+      @JsonKey(name: 'professional_id') final int? professionalId,
+      @JsonKey(name: 'is_ia') final bool isIa,
+      @JsonKey(name: 'start_time') required final DateTime startTime,
+      @JsonKey(name: 'end_time') required final DateTime endTime,
+      @JsonKey(name: 'branch_id') final int? branchId,
+      final double? price,
+      final int? quantity}) = _$PosSaleItemCreateDtoImpl;
 
   factory _PosSaleItemCreateDto.fromJson(Map<String, dynamic> json) =
       _$PosSaleItemCreateDtoImpl.fromJson;
@@ -1140,6 +1196,9 @@ abstract class _PosSaleItemCreateDto implements PosSaleItemCreateDto {
   @JsonKey(name: 'professional_id')
   int? get professionalId;
   @override
+  @JsonKey(name: 'is_ia')
+  bool get isIa;
+  @override
   @JsonKey(name: 'start_time')
   DateTime get startTime;
   @override
@@ -1148,6 +1207,10 @@ abstract class _PosSaleItemCreateDto implements PosSaleItemCreateDto {
   @override
   @JsonKey(name: 'branch_id')
   int? get branchId;
+  @override
+  double? get price;
+  @override
+  int? get quantity;
 
   /// Create a copy of PosSaleItemCreateDto
   /// with the given fields replaced by the non-null parameter values.
@@ -1175,6 +1238,8 @@ mixin _$PosSaleCreateDto {
   double get discountValue => throw _privateConstructorUsedError;
   String? get notes => throw _privateConstructorUsedError;
   List<PosSaleItemCreateDto> get items => throw _privateConstructorUsedError;
+  @JsonKey(name: 'link_appointment_id')
+  int? get linkAppointmentId => throw _privateConstructorUsedError;
   @JsonKey(name: 'sale_without_appointments')
   bool get saleWithoutAppointments => throw _privateConstructorUsedError;
 
@@ -1202,6 +1267,7 @@ abstract class $PosSaleCreateDtoCopyWith<$Res> {
       @JsonKey(name: 'discount_value') double discountValue,
       String? notes,
       List<PosSaleItemCreateDto> items,
+      @JsonKey(name: 'link_appointment_id') int? linkAppointmentId,
       @JsonKey(name: 'sale_without_appointments')
       bool saleWithoutAppointments});
 }
@@ -1228,6 +1294,7 @@ class _$PosSaleCreateDtoCopyWithImpl<$Res, $Val extends PosSaleCreateDto>
     Object? discountValue = null,
     Object? notes = freezed,
     Object? items = null,
+    Object? linkAppointmentId = freezed,
     Object? saleWithoutAppointments = null,
   }) {
     return _then(_value.copyWith(
@@ -1259,6 +1326,10 @@ class _$PosSaleCreateDtoCopyWithImpl<$Res, $Val extends PosSaleCreateDto>
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<PosSaleItemCreateDto>,
+      linkAppointmentId: freezed == linkAppointmentId
+          ? _value.linkAppointmentId
+          : linkAppointmentId // ignore: cast_nullable_to_non_nullable
+              as int?,
       saleWithoutAppointments: null == saleWithoutAppointments
           ? _value.saleWithoutAppointments
           : saleWithoutAppointments // ignore: cast_nullable_to_non_nullable
@@ -1283,6 +1354,7 @@ abstract class _$$PosSaleCreateDtoImplCopyWith<$Res>
       @JsonKey(name: 'discount_value') double discountValue,
       String? notes,
       List<PosSaleItemCreateDto> items,
+      @JsonKey(name: 'link_appointment_id') int? linkAppointmentId,
       @JsonKey(name: 'sale_without_appointments')
       bool saleWithoutAppointments});
 }
@@ -1307,6 +1379,7 @@ class __$$PosSaleCreateDtoImplCopyWithImpl<$Res>
     Object? discountValue = null,
     Object? notes = freezed,
     Object? items = null,
+    Object? linkAppointmentId = freezed,
     Object? saleWithoutAppointments = null,
   }) {
     return _then(_$PosSaleCreateDtoImpl(
@@ -1338,6 +1411,10 @@ class __$$PosSaleCreateDtoImplCopyWithImpl<$Res>
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<PosSaleItemCreateDto>,
+      linkAppointmentId: freezed == linkAppointmentId
+          ? _value.linkAppointmentId
+          : linkAppointmentId // ignore: cast_nullable_to_non_nullable
+              as int?,
       saleWithoutAppointments: null == saleWithoutAppointments
           ? _value.saleWithoutAppointments
           : saleWithoutAppointments // ignore: cast_nullable_to_non_nullable
@@ -1357,6 +1434,7 @@ class _$PosSaleCreateDtoImpl implements _PosSaleCreateDto {
       @JsonKey(name: 'discount_value') this.discountValue = 0.0,
       this.notes,
       required final List<PosSaleItemCreateDto> items,
+      @JsonKey(name: 'link_appointment_id') this.linkAppointmentId,
       @JsonKey(name: 'sale_without_appointments')
       this.saleWithoutAppointments = false})
       : _items = items;
@@ -1390,12 +1468,15 @@ class _$PosSaleCreateDtoImpl implements _PosSaleCreateDto {
   }
 
   @override
+  @JsonKey(name: 'link_appointment_id')
+  final int? linkAppointmentId;
+  @override
   @JsonKey(name: 'sale_without_appointments')
   final bool saleWithoutAppointments;
 
   @override
   String toString() {
-    return 'PosSaleCreateDto(clientId: $clientId, branchId: $branchId, paymentMethod: $paymentMethod, discountType: $discountType, discountValue: $discountValue, notes: $notes, items: $items, saleWithoutAppointments: $saleWithoutAppointments)';
+    return 'PosSaleCreateDto(clientId: $clientId, branchId: $branchId, paymentMethod: $paymentMethod, discountType: $discountType, discountValue: $discountValue, notes: $notes, items: $items, linkAppointmentId: $linkAppointmentId, saleWithoutAppointments: $saleWithoutAppointments)';
   }
 
   @override
@@ -1415,6 +1496,8 @@ class _$PosSaleCreateDtoImpl implements _PosSaleCreateDto {
                 other.discountValue == discountValue) &&
             (identical(other.notes, notes) || other.notes == notes) &&
             const DeepCollectionEquality().equals(other._items, _items) &&
+            (identical(other.linkAppointmentId, linkAppointmentId) ||
+                other.linkAppointmentId == linkAppointmentId) &&
             (identical(
                     other.saleWithoutAppointments, saleWithoutAppointments) ||
                 other.saleWithoutAppointments == saleWithoutAppointments));
@@ -1431,6 +1514,7 @@ class _$PosSaleCreateDtoImpl implements _PosSaleCreateDto {
       discountValue,
       notes,
       const DeepCollectionEquality().hash(_items),
+      linkAppointmentId,
       saleWithoutAppointments);
 
   /// Create a copy of PosSaleCreateDto
@@ -1459,6 +1543,7 @@ abstract class _PosSaleCreateDto implements PosSaleCreateDto {
       @JsonKey(name: 'discount_value') final double discountValue,
       final String? notes,
       required final List<PosSaleItemCreateDto> items,
+      @JsonKey(name: 'link_appointment_id') final int? linkAppointmentId,
       @JsonKey(name: 'sale_without_appointments')
       final bool saleWithoutAppointments}) = _$PosSaleCreateDtoImpl;
 
@@ -1484,6 +1569,9 @@ abstract class _PosSaleCreateDto implements PosSaleCreateDto {
   String? get notes;
   @override
   List<PosSaleItemCreateDto> get items;
+  @override
+  @JsonKey(name: 'link_appointment_id')
+  int? get linkAppointmentId;
   @override
   @JsonKey(name: 'sale_without_appointments')
   bool get saleWithoutAppointments;
