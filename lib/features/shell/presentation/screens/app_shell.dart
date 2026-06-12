@@ -7,6 +7,7 @@ import '../../../inicio/presentation/screens/inicio_tab.dart';
 import '../../../operarias/presentation/screens/operarias_tab.dart';
 import '../../../perfil/presentation/screens/perfil_tab.dart';
 import '../../../sucursales/presentation/screens/sucursales_tab.dart';
+import '../../../ventas/presentation/widgets/sale_form_sheet.dart';
 import '../providers/shell_tab_provider.dart';
 
 class AppShell extends ConsumerWidget {
@@ -37,6 +38,13 @@ class AppShell extends ConsumerWidget {
           selectedIndex: index,
           onTap: (i) => ref.read(shellTabProvider.notifier).state = i,
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => SaleFormSheet.show(context),
+          backgroundColor: AppColors.goldAccent,
+          foregroundColor: Colors.black87,
+          child: const Icon(Icons.point_of_sale),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
   }

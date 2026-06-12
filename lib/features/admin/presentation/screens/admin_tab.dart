@@ -156,12 +156,13 @@ class AdminTab extends ConsumerWidget {
               onTap: () => context.push(AppRoutes.roles),
             ),
             const SizedBox(height: 10),
-            const _ListTileCard(
-              iconBg: Color(0xFF1C1C1C),
-              iconColor: Color(0xFF9CA3AF),
+            _ListTileCard(
+              iconBg: const Color(0xFF1C1C1C),
+              iconColor: const Color(0xFF9CA3AF),
               icon: Icons.settings_outlined,
               title: 'Configuración',
               subtitle: 'APIs, integraciones y ajustes',
+              onTap: () => context.push(AppRoutes.settings),
             ),
             const SizedBox(height: 24),
             // Floating-style button for direct access to the sale form (new or edit)
@@ -200,12 +201,7 @@ class AdminTab extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => SaleFormSheet.show(context),
-        backgroundColor: AppColors.goldAccent,
-        foregroundColor: Colors.black87,
-        child: const Icon(Icons.add),
-      ),
+
     );
   }
 }

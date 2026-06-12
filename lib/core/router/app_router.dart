@@ -17,6 +17,7 @@ import '../../features/inventario/presentation/screens/inventario_screen.dart';
 import '../../features/pagos/presentation/screens/pagos_screen.dart';
 import '../../features/usuarios/presentation/screens/roles_screen.dart';
 import '../../features/ventas/presentation/screens/ventas_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 import 'guards.dart';
 import 'routes.dart';
 
@@ -95,6 +96,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.roles,
         builder: (_, __) => const RolesScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (_, __) => const SettingsScreen(),
       ),
     ],
   );
