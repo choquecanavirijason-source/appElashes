@@ -434,3 +434,200 @@ abstract class _RoleCreateDto implements RoleCreateDto {
   _$$RoleCreateDtoImplCopyWith<_$RoleCreateDtoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+RoleUpdateDto _$RoleUpdateDtoFromJson(Map<String, dynamic> json) {
+  return _RoleUpdateDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$RoleUpdateDto {
+  String? get name => throw _privateConstructorUsedError;
+  List<String>? get permissions => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
+
+  /// Serializes this RoleUpdateDto to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of RoleUpdateDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $RoleUpdateDtoCopyWith<RoleUpdateDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $RoleUpdateDtoCopyWith<$Res> {
+  factory $RoleUpdateDtoCopyWith(
+          RoleUpdateDto value, $Res Function(RoleUpdateDto) then) =
+      _$RoleUpdateDtoCopyWithImpl<$Res, RoleUpdateDto>;
+  @useResult
+  $Res call({String? name, List<String>? permissions, String? description});
+}
+
+/// @nodoc
+class _$RoleUpdateDtoCopyWithImpl<$Res, $Val extends RoleUpdateDto>
+    implements $RoleUpdateDtoCopyWith<$Res> {
+  _$RoleUpdateDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of RoleUpdateDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? permissions = freezed,
+    Object? description = freezed,
+  }) {
+    return _then(_value.copyWith(
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      permissions: freezed == permissions
+          ? _value.permissions
+          : permissions // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$RoleUpdateDtoImplCopyWith<$Res>
+    implements $RoleUpdateDtoCopyWith<$Res> {
+  factory _$$RoleUpdateDtoImplCopyWith(
+          _$RoleUpdateDtoImpl value, $Res Function(_$RoleUpdateDtoImpl) then) =
+      __$$RoleUpdateDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String? name, List<String>? permissions, String? description});
+}
+
+/// @nodoc
+class __$$RoleUpdateDtoImplCopyWithImpl<$Res>
+    extends _$RoleUpdateDtoCopyWithImpl<$Res, _$RoleUpdateDtoImpl>
+    implements _$$RoleUpdateDtoImplCopyWith<$Res> {
+  __$$RoleUpdateDtoImplCopyWithImpl(
+      _$RoleUpdateDtoImpl _value, $Res Function(_$RoleUpdateDtoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of RoleUpdateDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? permissions = freezed,
+    Object? description = freezed,
+  }) {
+    return _then(_$RoleUpdateDtoImpl(
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      permissions: freezed == permissions
+          ? _value._permissions
+          : permissions // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$RoleUpdateDtoImpl implements _RoleUpdateDto {
+  const _$RoleUpdateDtoImpl(
+      {this.name, final List<String>? permissions, this.description})
+      : _permissions = permissions;
+
+  factory _$RoleUpdateDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RoleUpdateDtoImplFromJson(json);
+
+  @override
+  final String? name;
+  final List<String>? _permissions;
+  @override
+  List<String>? get permissions {
+    final value = _permissions;
+    if (value == null) return null;
+    if (_permissions is EqualUnmodifiableListView) return _permissions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  final String? description;
+
+  @override
+  String toString() {
+    return 'RoleUpdateDto(name: $name, permissions: $permissions, description: $description)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RoleUpdateDtoImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            const DeepCollectionEquality()
+                .equals(other._permissions, _permissions) &&
+            (identical(other.description, description) ||
+                other.description == description));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name,
+      const DeepCollectionEquality().hash(_permissions), description);
+
+  /// Create a copy of RoleUpdateDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RoleUpdateDtoImplCopyWith<_$RoleUpdateDtoImpl> get copyWith =>
+      __$$RoleUpdateDtoImplCopyWithImpl<_$RoleUpdateDtoImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$RoleUpdateDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _RoleUpdateDto implements RoleUpdateDto {
+  const factory _RoleUpdateDto(
+      {final String? name,
+      final List<String>? permissions,
+      final String? description}) = _$RoleUpdateDtoImpl;
+
+  factory _RoleUpdateDto.fromJson(Map<String, dynamic> json) =
+      _$RoleUpdateDtoImpl.fromJson;
+
+  @override
+  String? get name;
+  @override
+  List<String>? get permissions;
+  @override
+  String? get description;
+
+  /// Create a copy of RoleUpdateDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$RoleUpdateDtoImplCopyWith<_$RoleUpdateDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

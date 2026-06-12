@@ -26,6 +26,15 @@ class OperariasListNotifier
     await future;
   }
 
+  Future<void> toggleActiva(int id, {required bool activa}) async {
+    await ref.read(operariasRepositoryProvider).update(
+          id,
+          OperariaUpdateDto(isActive: activa),
+        );
+    ref.invalidateSelf();
+    await future;
+  }
+
   Future<void> removeOperaria(int id) async {
     await ref.read(operariasRepositoryProvider).delete(id);
     ref.invalidateSelf();

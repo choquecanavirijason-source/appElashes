@@ -33,3 +33,15 @@ class RoleCreateDto with _$RoleCreateDto {
   factory RoleCreateDto.fromJson(Map<String, dynamic> json) =>
       _$RoleCreateDtoFromJson(json);
 }
+
+@freezed
+class RoleUpdateDto with _$RoleUpdateDto {
+  const factory RoleUpdateDto({
+    String? name,
+    List<String>? permissions,
+    String? description,
+  }) = _RoleUpdateDto;
+
+  factory RoleUpdateDto.fromJson(Map<String, dynamic> json) =>
+      _$RoleUpdateDtoFromJson(json);
+}

@@ -28,6 +28,7 @@ class Role {
 abstract interface class RolesRepository {
   Future<List<Role>> list();
   Future<Role> create(RoleCreateDto dto);
+  Future<Role> update(int id, RoleUpdateDto dto);
   Future<void> delete(int id);
 }
 
@@ -45,6 +46,12 @@ class RolesRepositoryImpl implements RolesRepository {
   @override
   Future<Role> create(RoleCreateDto dto) async {
     final result = await _api.create(dto);
+    return Role.fromDto(result);
+  }
+
+  @override
+  Future<Role> update(int id, RoleUpdateDto dto) async {
+    final result = await _api.update(id, dto);
     return Role.fromDto(result);
   }
 

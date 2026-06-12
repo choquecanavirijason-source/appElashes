@@ -45,6 +45,7 @@ _$BranchDtoImpl _$$BranchDtoImplFromJson(Map<String, dynamic> json) =>
       address: json['address'] as String?,
       city: json['city'] as String?,
       department: json['department'] as String?,
+      isActive: json['is_active'] as bool? ?? true,
       openingHours: (json['opening_hours'] as List<dynamic>?)
               ?.map((e) =>
                   BranchDayScheduleDto.fromJson(e as Map<String, dynamic>))
@@ -63,6 +64,7 @@ Map<String, dynamic> _$$BranchDtoImplToJson(_$BranchDtoImpl instance) =>
       'address': instance.address,
       'city': instance.city,
       'department': instance.department,
+      'is_active': instance.isActive,
       'opening_hours': instance.openingHours,
       'user_ids': instance.userIds,
     };
@@ -103,6 +105,7 @@ _$BranchUpdateDtoImpl _$$BranchUpdateDtoImplFromJson(
       address: json['address'] as String?,
       city: json['city'] as String?,
       department: json['department'] as String?,
+      isActive: json['is_active'] as bool?,
       openingHours: (json['opening_hours'] as List<dynamic>?)
           ?.map((e) => BranchDayScheduleDto.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -118,6 +121,7 @@ Map<String, dynamic> _$$BranchUpdateDtoImplToJson(
       'address': instance.address,
       'city': instance.city,
       'department': instance.department,
+      'is_active': instance.isActive,
       'opening_hours': instance.openingHours,
       'user_ids': instance.userIds,
     };

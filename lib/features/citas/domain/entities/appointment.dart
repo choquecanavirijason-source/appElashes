@@ -7,6 +7,7 @@ class Appointment {
     this.ticketCode,
     required this.clientId,
     required this.clientName,
+    this.clientPhone,
     this.professionalId,
     this.professionalName,
     this.serviceId,
@@ -23,6 +24,7 @@ class Appointment {
   final String? ticketCode;
   final int clientId;
   final String clientName;
+  final String? clientPhone;
   final int? professionalId;
   final String? professionalName;
   final int? serviceId;
@@ -61,6 +63,7 @@ class Appointment {
       ticketCode: dto.ticketCode,
       clientId: dto.clientId,
       clientName: clientName,
+      clientPhone: dto.client.phone,
       professionalId: dto.professionalId,
       professionalName: dto.professional?.username,
       serviceId: dto.serviceId,
@@ -81,6 +84,7 @@ class Appointment {
     String? ticketCode,
     int? clientId,
     String? clientName,
+    String? clientPhone,
     int? professionalId,
     String? professionalName,
     int? serviceId,
@@ -97,6 +101,7 @@ class Appointment {
       ticketCode: ticketCode ?? this.ticketCode,
       clientId: clientId ?? this.clientId,
       clientName: clientName ?? this.clientName,
+      clientPhone: clientPhone ?? this.clientPhone,
       professionalId: professionalId ?? this.professionalId,
       professionalName: professionalName ?? this.professionalName,
       serviceId: serviceId ?? this.serviceId,

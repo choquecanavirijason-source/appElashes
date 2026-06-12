@@ -40,3 +40,19 @@ Map<String, dynamic> _$$RoleCreateDtoImplToJson(_$RoleCreateDtoImpl instance) =>
       'permissions': instance.permissions,
       'description': instance.description,
     };
+
+_$RoleUpdateDtoImpl _$$RoleUpdateDtoImplFromJson(Map<String, dynamic> json) =>
+    _$RoleUpdateDtoImpl(
+      name: json['name'] as String?,
+      permissions: (json['permissions'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      description: json['description'] as String?,
+    );
+
+Map<String, dynamic> _$$RoleUpdateDtoImplToJson(_$RoleUpdateDtoImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'permissions': instance.permissions,
+      'description': instance.description,
+    };

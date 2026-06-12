@@ -24,6 +24,14 @@ class RolesApi {
     return RoleDto.fromJson(response.data!);
   }
 
+  Future<RoleDto> update(int id, RoleUpdateDto dto) async {
+    final response = await _dio.put<Map<String, dynamic>>(
+      '${ApiEndpoints.adminRoles}/$id',
+      data: dto.toJson(),
+    );
+    return RoleDto.fromJson(response.data!);
+  }
+
   Future<void> delete(int id) async {
     await _dio.delete<void>('${ApiEndpoints.adminRoles}/$id');
   }

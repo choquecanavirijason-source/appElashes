@@ -1,9 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/storage/prefs_storage.dart';
 import '../../../../shared/data/mock_sucursales.dart';
 import '../../data/models/branch_dto.dart';
 import '../../data/sucursales_repository_impl.dart';
 import '../../domain/entities/sucursal.dart';
+
+/// ID de la sucursal actualmente seleccionada (null = todas).
+/// Inicializado desde SharedPreferences al arrancar.
+final selectedBranchIdProvider = StateProvider<int?>((ref) {
+  return ref.read(prefsStorageProvider).selectedBranchId;
+});
 
 // ── Real backend provider ────────────────────────────────────────────────────
 
@@ -22,6 +29,15 @@ class SucursalesListNotifier
 
   Future<void> editSucursal(int id, BranchUpdateDto input) async {
     await ref.read(sucursalesRepositoryProvider).update(id, input);
+    ref.invalidateSelf();
+    await future;
+  }
+
+  Future<void> toggleActiva(int id, {required bool activa}) async {
+    await ref.read(sucursalesRepositoryProvider).update(
+          id,
+          BranchUpdateDto(isActive: activa),
+        );
     ref.invalidateSelf();
     await future;
   }

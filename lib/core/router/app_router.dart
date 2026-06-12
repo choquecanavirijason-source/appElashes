@@ -16,6 +16,9 @@ import '../../features/comisiones/presentation/screens/comisiones_screen.dart';
 import '../../features/inventario/presentation/screens/inventario_screen.dart';
 import '../../features/pagos/presentation/screens/pagos_screen.dart';
 import '../../features/usuarios/presentation/screens/roles_screen.dart';
+import '../../features/citas/presentation/screens/recordatorios_screen.dart';
+import '../../features/citas/presentation/screens/citas_tab.dart';
+import '../../features/citas/presentation/screens/recepcion_screen.dart';
 import '../../features/ventas/presentation/screens/ventas_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import 'guards.dart';
@@ -100,6 +103,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (_, __) => const SettingsScreen(),
+      ),
+      GoRoute(
+          path: AppRoutes.recordatorios,
+        builder: (_, __) => const RecordatoriosScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.recepcion,
+        builder: (_, __) => const RecepcionScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.citas,
+        builder: (_, __) => const CitasTab(mostrarAppBar: true),
       ),
     ],
   );

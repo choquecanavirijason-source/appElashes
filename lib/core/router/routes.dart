@@ -47,4 +47,7 @@ class AppRoutes {
   static const String cierreCaja = '/cierre-caja';
   static const String clientes = '/clientes';
   static const String roles = '/roles';
+  static const String recordatorios = '/recordatorios';
+  static const String recepcion = '/recepcion';
+  static const String citas = '/citas';
 }

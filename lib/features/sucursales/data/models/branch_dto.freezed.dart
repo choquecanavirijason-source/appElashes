@@ -387,6 +387,8 @@ mixin _$BranchDto {
   String? get address => throw _privateConstructorUsedError;
   String? get city => throw _privateConstructorUsedError;
   String? get department => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_active')
+  bool get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'opening_hours')
   List<BranchDayScheduleDto> get openingHours =>
       throw _privateConstructorUsedError;
@@ -414,6 +416,7 @@ abstract class $BranchDtoCopyWith<$Res> {
       String? address,
       String? city,
       String? department,
+      @JsonKey(name: 'is_active') bool isActive,
       @JsonKey(name: 'opening_hours') List<BranchDayScheduleDto> openingHours,
       @JsonKey(name: 'user_ids') List<int> userIds});
 }
@@ -438,6 +441,7 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
     Object? address = freezed,
     Object? city = freezed,
     Object? department = freezed,
+    Object? isActive = null,
     Object? openingHours = null,
     Object? userIds = null,
   }) {
@@ -462,6 +466,10 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
           ? _value.department
           : department // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: null == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool,
       openingHours: null == openingHours
           ? _value.openingHours
           : openingHours // ignore: cast_nullable_to_non_nullable
@@ -488,6 +496,7 @@ abstract class _$$BranchDtoImplCopyWith<$Res>
       String? address,
       String? city,
       String? department,
+      @JsonKey(name: 'is_active') bool isActive,
       @JsonKey(name: 'opening_hours') List<BranchDayScheduleDto> openingHours,
       @JsonKey(name: 'user_ids') List<int> userIds});
 }
@@ -510,6 +519,7 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
     Object? address = freezed,
     Object? city = freezed,
     Object? department = freezed,
+    Object? isActive = null,
     Object? openingHours = null,
     Object? userIds = null,
   }) {
@@ -534,6 +544,10 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
           ? _value.department
           : department // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: null == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool,
       openingHours: null == openingHours
           ? _value._openingHours
           : openingHours // ignore: cast_nullable_to_non_nullable
@@ -555,6 +569,7 @@ class _$BranchDtoImpl implements _BranchDto {
       this.address,
       this.city,
       this.department,
+      @JsonKey(name: 'is_active') this.isActive = true,
       @JsonKey(name: 'opening_hours')
       final List<BranchDayScheduleDto> openingHours = const [],
       @JsonKey(name: 'user_ids') final List<int> userIds = const []})
@@ -574,6 +589,9 @@ class _$BranchDtoImpl implements _BranchDto {
   final String? city;
   @override
   final String? department;
+  @override
+  @JsonKey(name: 'is_active')
+  final bool isActive;
   final List<BranchDayScheduleDto> _openingHours;
   @override
   @JsonKey(name: 'opening_hours')
@@ -594,7 +612,7 @@ class _$BranchDtoImpl implements _BranchDto {
 
   @override
   String toString() {
-    return 'BranchDto(id: $id, name: $name, address: $address, city: $city, department: $department, openingHours: $openingHours, userIds: $userIds)';
+    return 'BranchDto(id: $id, name: $name, address: $address, city: $city, department: $department, isActive: $isActive, openingHours: $openingHours, userIds: $userIds)';
   }
 
   @override
@@ -608,6 +626,8 @@ class _$BranchDtoImpl implements _BranchDto {
             (identical(other.city, city) || other.city == city) &&
             (identical(other.department, department) ||
                 other.department == department) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
             const DeepCollectionEquality()
                 .equals(other._openingHours, _openingHours) &&
             const DeepCollectionEquality().equals(other._userIds, _userIds));
@@ -622,6 +642,7 @@ class _$BranchDtoImpl implements _BranchDto {
       address,
       city,
       department,
+      isActive,
       const DeepCollectionEquality().hash(_openingHours),
       const DeepCollectionEquality().hash(_userIds));
 
@@ -648,6 +669,7 @@ abstract class _BranchDto implements BranchDto {
       final String? address,
       final String? city,
       final String? department,
+      @JsonKey(name: 'is_active') final bool isActive,
       @JsonKey(name: 'opening_hours')
       final List<BranchDayScheduleDto> openingHours,
       @JsonKey(name: 'user_ids') final List<int> userIds}) = _$BranchDtoImpl;
@@ -665,6 +687,9 @@ abstract class _BranchDto implements BranchDto {
   String? get city;
   @override
   String? get department;
+  @override
+  @JsonKey(name: 'is_active')
+  bool get isActive;
   @override
   @JsonKey(name: 'opening_hours')
   List<BranchDayScheduleDto> get openingHours;
@@ -976,6 +1001,8 @@ mixin _$BranchUpdateDto {
   String? get address => throw _privateConstructorUsedError;
   String? get city => throw _privateConstructorUsedError;
   String? get department => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_active')
+  bool? get isActive => throw _privateConstructorUsedError;
   @JsonKey(name: 'opening_hours')
   List<BranchDayScheduleDto>? get openingHours =>
       throw _privateConstructorUsedError;
@@ -1003,6 +1030,7 @@ abstract class $BranchUpdateDtoCopyWith<$Res> {
       String? address,
       String? city,
       String? department,
+      @JsonKey(name: 'is_active') bool? isActive,
       @JsonKey(name: 'opening_hours') List<BranchDayScheduleDto>? openingHours,
       @JsonKey(name: 'user_ids') List<int>? userIds});
 }
@@ -1026,6 +1054,7 @@ class _$BranchUpdateDtoCopyWithImpl<$Res, $Val extends BranchUpdateDto>
     Object? address = freezed,
     Object? city = freezed,
     Object? department = freezed,
+    Object? isActive = freezed,
     Object? openingHours = freezed,
     Object? userIds = freezed,
   }) {
@@ -1046,6 +1075,10 @@ class _$BranchUpdateDtoCopyWithImpl<$Res, $Val extends BranchUpdateDto>
           ? _value.department
           : department // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool?,
       openingHours: freezed == openingHours
           ? _value.openingHours
           : openingHours // ignore: cast_nullable_to_non_nullable
@@ -1071,6 +1104,7 @@ abstract class _$$BranchUpdateDtoImplCopyWith<$Res>
       String? address,
       String? city,
       String? department,
+      @JsonKey(name: 'is_active') bool? isActive,
       @JsonKey(name: 'opening_hours') List<BranchDayScheduleDto>? openingHours,
       @JsonKey(name: 'user_ids') List<int>? userIds});
 }
@@ -1092,6 +1126,7 @@ class __$$BranchUpdateDtoImplCopyWithImpl<$Res>
     Object? address = freezed,
     Object? city = freezed,
     Object? department = freezed,
+    Object? isActive = freezed,
     Object? openingHours = freezed,
     Object? userIds = freezed,
   }) {
@@ -1112,6 +1147,10 @@ class __$$BranchUpdateDtoImplCopyWithImpl<$Res>
           ? _value.department
           : department // ignore: cast_nullable_to_non_nullable
               as String?,
+      isActive: freezed == isActive
+          ? _value.isActive
+          : isActive // ignore: cast_nullable_to_non_nullable
+              as bool?,
       openingHours: freezed == openingHours
           ? _value._openingHours
           : openingHours // ignore: cast_nullable_to_non_nullable
@@ -1132,6 +1171,7 @@ class _$BranchUpdateDtoImpl implements _BranchUpdateDto {
       this.address,
       this.city,
       this.department,
+      @JsonKey(name: 'is_active') this.isActive,
       @JsonKey(name: 'opening_hours')
       final List<BranchDayScheduleDto>? openingHours,
       @JsonKey(name: 'user_ids') final List<int>? userIds})
@@ -1149,6 +1189,9 @@ class _$BranchUpdateDtoImpl implements _BranchUpdateDto {
   final String? city;
   @override
   final String? department;
+  @override
+  @JsonKey(name: 'is_active')
+  final bool? isActive;
   final List<BranchDayScheduleDto>? _openingHours;
   @override
   @JsonKey(name: 'opening_hours')
@@ -1173,7 +1216,7 @@ class _$BranchUpdateDtoImpl implements _BranchUpdateDto {
 
   @override
   String toString() {
-    return 'BranchUpdateDto(name: $name, address: $address, city: $city, department: $department, openingHours: $openingHours, userIds: $userIds)';
+    return 'BranchUpdateDto(name: $name, address: $address, city: $city, department: $department, isActive: $isActive, openingHours: $openingHours, userIds: $userIds)';
   }
 
   @override
@@ -1186,6 +1229,8 @@ class _$BranchUpdateDtoImpl implements _BranchUpdateDto {
             (identical(other.city, city) || other.city == city) &&
             (identical(other.department, department) ||
                 other.department == department) &&
+            (identical(other.isActive, isActive) ||
+                other.isActive == isActive) &&
             const DeepCollectionEquality()
                 .equals(other._openingHours, _openingHours) &&
             const DeepCollectionEquality().equals(other._userIds, _userIds));
@@ -1199,6 +1244,7 @@ class _$BranchUpdateDtoImpl implements _BranchUpdateDto {
       address,
       city,
       department,
+      isActive,
       const DeepCollectionEquality().hash(_openingHours),
       const DeepCollectionEquality().hash(_userIds));
 
@@ -1225,6 +1271,7 @@ abstract class _BranchUpdateDto implements BranchUpdateDto {
           final String? address,
           final String? city,
           final String? department,
+          @JsonKey(name: 'is_active') final bool? isActive,
           @JsonKey(name: 'opening_hours')
           final List<BranchDayScheduleDto>? openingHours,
           @JsonKey(name: 'user_ids') final List<int>? userIds}) =
@@ -1241,6 +1288,9 @@ abstract class _BranchUpdateDto implements BranchUpdateDto {
   String? get city;
   @override
   String? get department;
+  @override
+  @JsonKey(name: 'is_active')
+  bool? get isActive;
   @override
   @JsonKey(name: 'opening_hours')
   List<BranchDayScheduleDto>? get openingHours;
