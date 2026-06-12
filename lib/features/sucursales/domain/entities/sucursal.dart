@@ -32,6 +32,7 @@ class Sucursal {
   factory Sucursal.fromDto(BranchDto dto) => Sucursal(
         id: dto.id,
         nombre: dto.name,
+        activa: dto.isActive,
         ciudad: dto.city,
         departamento: dto.department,
         direccion: dto.address,

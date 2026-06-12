@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/error/api_exception.dart';
 import '../../../../core/presentation/atoms/initials_avatar.dart';
 import '../../../../core/presentation/organisms/async_value_view.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -56,8 +58,9 @@ class EquipoTab extends ConsumerWidget {
               const SizedBox(height: 10),
               ...activas.map(
                 (o) => Padding(
+                  key: ValueKey('activa-${o.id}'),
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: _MemberCard(operaria: o),
+                  child: _MemberCard(key: ValueKey(o.id), operaria: o),
                 ),
               ),
               if (inactivas.isNotEmpty) ...[
@@ -70,8 +73,9 @@ class EquipoTab extends ConsumerWidget {
                 const SizedBox(height: 10),
                 ...inactivas.map(
                   (o) => Padding(
+                    key: ValueKey('inactiva-${o.id}'),
                     padding: const EdgeInsets.only(bottom: 10),
-                    child: _MemberCard(operaria: o),
+                    child: _MemberCard(key: ValueKey(o.id), operaria: o),
                   ),
                 ),
               ],
@@ -133,13 +137,20 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _MemberCard extends ConsumerWidget {
-  const _MemberCard({required this.operaria});
+class _MemberCard extends ConsumerStatefulWidget {
+  const _MemberCard({super.key, required this.operaria});
 
   final Operaria operaria;
 
+  @override
+  ConsumerState<_MemberCard> createState() => _MemberCardState();
+}
+
+class _MemberCardState extends ConsumerState<_MemberCard> {
+  bool _toggling = false;
+
   Color get _rolColor {
-    switch (operaria.rol) {
+    switch (widget.operaria.rol) {
       case 'Supervisora':
       case 'Admin':
         return AppColors.statusEnServicio;
@@ -152,86 +163,170 @@ class _MemberCard extends ConsumerWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final statusColor =
-        operaria.activa ? AppColors.onlineGreen : AppColors.offlineRed;
+  Future<void> _toggle() async {
+    final nueva = !widget.operaria.activa;
+    setState(() => _toggling = true);
+    try {
+      await ref
+          .read(operariasListProvider.notifier)
+          .toggleActiva(widget.operaria.id, activa: nueva);
+    } on DioException catch (e) {
+      final msg = e.error is ApiException
+          ? (e.error as ApiException).message
+          : 'Error al cambiar estado';
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: AppColors.statusCancelado,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _toggling = false);
+    }
+  }
 
-    return Material(
-      color: AppColors.darkCard,
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
+  @override
+  Widget build(BuildContext context) {
+    final o = widget.operaria;
+    final statusColor = o.activa ? AppColors.onlineGreen : AppColors.offlineRed;
+
+    return Opacity(
+      opacity: o.activa ? 1.0 : 0.65,
+      child: Material(
+        color: AppColors.darkCard,
         borderRadius: BorderRadius.circular(14),
-        onTap: () => OperariaFormSheet.show(context, existing: operaria),
-        child: Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.darkCardElevated),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              InitialsAvatar(
-                initials: operaria.iniciales,
-                size: 46,
-                backgroundColor: AppColors.avatarOlive,
-                statusColor: statusColor,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => OperariaFormSheet.show(context, existing: o),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.darkCardElevated),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      operaria.nombreCompleto,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
+                    InitialsAvatar(
+                      initials: o.iniciales,
+                      size: 46,
+                      backgroundColor: AppColors.avatarOlive,
+                      statusColor: statusColor,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            o.nombreCompleto,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                            ),
+                          ),
+                          if (o.email != null)
+                            Text(
+                              o.email!,
+                              style: const TextStyle(
+                                color: Color(0xFF6B7280),
+                                fontSize: 12,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    if (operaria.email != null)
-                      Text(
-                        operaria.email!,
-                        style: const TextStyle(
-                          color: Color(0xFF6B7280),
-                          fontSize: 12,
+                    _StatusPill(activa: o.activa),
+                    const SizedBox(width: 4),
+                    if (_toggling)
+                      const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.brandAccent,
                         ),
+                      )
+                    else
+                      PopupMenuButton<_CardAction>(
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: Color(0xFF6B7280),
+                          size: 20,
+                        ),
+                        onSelected: (action) {
+                          switch (action) {
+                            case _CardAction.edit:
+                              OperariaFormSheet.show(context, existing: o);
+                            case _CardAction.toggle:
+                              _toggle();
+                          }
+                        },
+                        itemBuilder: (_) => [
+                          const PopupMenuItem(
+                            value: _CardAction.edit,
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit_outlined, size: 18),
+                                SizedBox(width: 10),
+                                Text('Editar'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: _CardAction.toggle,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  o.activa
+                                      ? Icons.pause_circle_outline
+                                      : Icons.play_circle_outline,
+                                  size: 18,
+                                  color: o.activa
+                                      ? AppColors.statusEnEspera
+                                      : AppColors.brandAccent,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  o.activa ? 'Deshabilitar' : 'Habilitar',
+                                  style: TextStyle(
+                                    color: o.activa
+                                        ? AppColors.statusEnEspera
+                                        : AppColors.brandAccent,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                   ],
                 ),
-              ),
-              _StatusPill(activa: operaria.activa),
-              const SizedBox(width: 4),
-              const Icon(
-                Icons.chevron_right,
-                color: Color(0xFF4B5563),
-                size: 18,
-              ),
-            ],
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _RoleChip(label: o.rol, color: _rolColor),
+                    if (o.sucursal.isNotEmpty)
+                      _SucursalChip(nombre: o.sucursal),
+                    if (o.phone != null) _PhoneChip(phone: o.phone!),
+                  ],
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              _RoleChip(label: operaria.rol, color: _rolColor),
-              if (operaria.sucursal.isNotEmpty)
-                _SucursalChip(nombre: operaria.sucursal),
-              if (operaria.phone != null)
-                _PhoneChip(phone: operaria.phone!),
-            ],
-          ),
-        ],
-      ),
         ),
       ),
     );
   }
 }
+
+enum _CardAction { edit, toggle }
 
 class _StatusPill extends StatelessWidget {
   const _StatusPill({required this.activa});

@@ -33,6 +33,7 @@ class BranchDto with _$BranchDto {
     String? address,
     String? city,
     String? department,
+    @JsonKey(name: 'is_active') @Default(true) bool isActive,
     @JsonKey(name: 'opening_hours') @Default([]) List<BranchDayScheduleDto> openingHours,
     @JsonKey(name: 'user_ids') @Default([]) List<int> userIds,
   }) = _BranchDto;
@@ -63,6 +64,7 @@ class BranchUpdateDto with _$BranchUpdateDto {
     String? address,
     String? city,
     String? department,
+    @JsonKey(name: 'is_active') bool? isActive,
     @JsonKey(name: 'opening_hours') List<BranchDayScheduleDto>? openingHours,
     @JsonKey(name: 'user_ids') List<int>? userIds,
   }) = _BranchUpdateDto;

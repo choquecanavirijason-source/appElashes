@@ -17,6 +17,11 @@ class RolesNotifier extends AutoDisposeAsyncNotifier<List<Role>> {
     ref.invalidateSelf();
   }
 
+  Future<void> edit(int id, RoleUpdateDto dto) async {
+    await ref.read(rolesRepositoryProvider).update(id, dto);
+    ref.invalidateSelf();
+  }
+
   Future<void> remove(int id) async {
     await ref.read(rolesRepositoryProvider).delete(id);
     ref.invalidateSelf();

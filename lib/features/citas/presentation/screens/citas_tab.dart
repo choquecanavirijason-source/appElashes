@@ -11,13 +11,26 @@ import '../providers/appointments_provider.dart';
 import '../widgets/appointment_form_sheet.dart';
 
 class CitasTab extends ConsumerWidget {
-  const CitasTab({super.key});
+  const CitasTab({super.key, this.mostrarAppBar = false});
+
+  final bool mostrarAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(appointmentsListProvider);
 
     return Scaffold(
+      appBar: mostrarAppBar
+          ? AppBar(
+              title: const Text('Citas'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () => ref.invalidate(appointmentsListProvider),
+                ),
+              ],
+            )
+          : null,
       body: AsyncValueView<List<Appointment>>(
         value: state,
         onRetry: () => ref.invalidate(appointmentsListProvider),

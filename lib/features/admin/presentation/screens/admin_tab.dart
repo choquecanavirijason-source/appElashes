@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/router/routes.dart';
+import '../../../../shared/enums/appointment_status.dart';
+import '../../../citas/presentation/providers/appointments_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../shell/presentation/providers/shell_tab_provider.dart';
 
@@ -11,6 +14,27 @@ class AdminTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Citas de hoy pendientes (no terminales) para el badge de Recepción
+    final citasHoyPendientes = ref.watch(citasHoyProvider)
+        .where(
+          (c) =>
+              c.status != AppointmentStatus.pagada &&
+              c.status != AppointmentStatus.cancelada &&
+              c.status != AppointmentStatus.noSePresento,
+        )
+        .length;
+
+    // Conteo de citas mañana para el badge de recordatorios
+    final citasManana = ref.watch(appointmentsListProvider).valueOrNull
+            ?.where((c) {
+              final m = _manana();
+              return c.startTime.year == m.year &&
+                  c.startTime.month == m.month &&
+                  c.startTime.day == m.day;
+            })
+            .length ??
+        0;
+
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -34,7 +58,23 @@ class AdminTab extends ConsumerWidget {
               icon: Icons.point_of_sale,
               title: 'Recepción',
               subtitle: 'Check-in / check-out de clientas',
-              badge: _HoyBadge(),
+              badge: _HoyBadge(count: citasHoyPendientes),
+              onTap: () => context.push(AppRoutes.recepcion),
+            ),
+            const SizedBox(height: 10),
+            _ListTileCard(
+              iconBg: const Color(0xFF0D2B1A),
+              iconColor: const Color(0xFF25D366),
+              icon: Icons.notifications_active_outlined,
+              title: 'Recordatorios',
+              subtitle: 'Confirmar citas del día siguiente vía WhatsApp',
+              badge: citasManana > 0
+                  ? _CountBadge(
+                      count: citasManana,
+                      label: DateFormat('d MMM', 'es').format(_manana()),
+                    )
+                  : null,
+              onTap: () => context.push(AppRoutes.recordatorios),
             ),
             const SizedBox(height: 10),
             _ListTileCard(
@@ -271,45 +311,49 @@ class _GridCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.darkCard,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.darkCardElevated),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: iconBg,
-                borderRadius: BorderRadius.circular(12),
+    return Material(
+      color: AppColors.darkCard,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.darkCardElevated),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: iconBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: iconColor, size: 22),
               ),
-              child: Icon(icon, color: iconColor, size: 22),
-            ),
-            const Spacer(),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
+              const Spacer(),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                color: Color(0xFF6B7280),
-                fontSize: 11,
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  color: Color(0xFF6B7280),
+                  fontSize: 11,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -317,6 +361,10 @@ class _GridCard extends StatelessWidget {
 }
 
 class _HoyBadge extends StatelessWidget {
+  const _HoyBadge({this.count = 0});
+
+  final int count;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -325,9 +373,9 @@ class _HoyBadge extends StatelessWidget {
         color: AppColors.statusEnEspera.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: const Text(
-        'HOY',
-        style: TextStyle(
+      child: Text(
+        count > 0 ? '$count hoy' : 'HOY',
+        style: const TextStyle(
           color: AppColors.statusEnEspera,
           fontSize: 10,
           fontWeight: FontWeight.w700,
@@ -361,4 +409,36 @@ class _RoleBadge extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CountBadge extends StatelessWidget {
+  const _CountBadge({required this.count, required this.label});
+
+  final int count;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFF25D366).withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        '$count · $label',
+        style: const TextStyle(
+          color: Color(0xFF25D366),
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+}
+
+DateTime _manana() {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day + 1);
 }
