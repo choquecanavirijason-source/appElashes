@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/presentation/atoms/initials_avatar.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/providers/auth_state_provider.dart';
 
@@ -14,6 +15,7 @@ class PerfilTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authUserProvider);
+    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
@@ -21,10 +23,10 @@ class PerfilTab extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
           children: [
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Perfil',
               style: TextStyle(
-                color: Colors.white,
+                color: cs.onSurface,
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
               ),
@@ -37,10 +39,62 @@ class PerfilTab extends ConsumerWidget {
             ] else
               const _EmptyUser(),
             const SizedBox(height: 24),
+            const _AppearanceSection(),
+            const SizedBox(height: 16),
             _LogoutButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+// ─── Apariencia (modo claro/oscuro) ───────────────────────────────────────────
+
+class _AppearanceSection extends ConsumerWidget {
+  const _AppearanceSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cs = Theme.of(context).colorScheme;
+    final mode = ref.watch(themeModeProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'APARIENCIA',
+          style: TextStyle(
+            color: cs.onSurfaceVariant,
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 10),
+        SegmentedButton<ThemeMode>(
+          segments: const [
+            ButtonSegment(
+              value: ThemeMode.system,
+              label: Text('Sistema'),
+              icon: Icon(Icons.brightness_auto),
+            ),
+            ButtonSegment(
+              value: ThemeMode.light,
+              label: Text('Claro'),
+              icon: Icon(Icons.light_mode_outlined),
+            ),
+            ButtonSegment(
+              value: ThemeMode.dark,
+              label: Text('Oscuro'),
+              icon: Icon(Icons.dark_mode_outlined),
+            ),
+          ],
+          selected: {mode},
+          showSelectedIcon: false,
+          onSelectionChanged: (s) =>
+              ref.read(themeModeProvider.notifier).set(s.first),
+        ),
+      ],
     );
   }
 }
@@ -120,11 +174,12 @@ class _InfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: cs.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.darkCardElevated),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: Column(
         children: [
@@ -133,14 +188,14 @@ class _InfoSection extends StatelessWidget {
             label: 'Usuario',
             value: user.username,
           ),
-          _Divider(),
+          const _Divider(),
           _InfoRow(
             icon: Icons.email_outlined,
             label: 'Email',
             value: user.email,
           ),
           if (user.phone != null) ...[
-            _Divider(),
+            const _Divider(),
             _InfoRow(
               icon: Icons.phone_outlined,
               label: 'Teléfono',
@@ -148,7 +203,7 @@ class _InfoSection extends StatelessWidget {
             ),
           ],
           if (user.roleName != null) ...[
-            _Divider(),
+            const _Divider(),
             _InfoRow(
               icon: Icons.shield_outlined,
               label: 'Rol',
@@ -156,14 +211,14 @@ class _InfoSection extends StatelessWidget {
             ),
           ],
           if (user.branchName != null) ...[
-            _Divider(),
+            const _Divider(),
             _InfoRow(
               icon: Icons.store_outlined,
               label: 'Sucursal',
               value: user.branchName!,
             ),
           ],
-          _Divider(),
+          const _Divider(),
           _InfoRow(
             icon: Icons.circle,
             label: 'Estado',
@@ -178,12 +233,14 @@ class _InfoSection extends StatelessWidget {
 }
 
 class _Divider extends StatelessWidget {
+  const _Divider();
+
   @override
   Widget build(BuildContext context) {
-    return const Divider(
+    return Divider(
       height: 1,
       thickness: 1,
-      color: AppColors.darkCardElevated,
+      color: Theme.of(context).colorScheme.outlineVariant,
       indent: 52,
     );
   }
@@ -206,17 +263,18 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: iconColor ?? const Color(0xFF6B7280)),
+          Icon(icon, size: 18, color: iconColor ?? cs.onSurfaceVariant),
           const SizedBox(width: 14),
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
-                color: Color(0xFF6B7280),
+              style: TextStyle(
+                color: cs.onSurfaceVariant,
                 fontSize: 13,
               ),
             ),
@@ -224,7 +282,7 @@ class _InfoRow extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              color: valueColor ?? Colors.white,
+              color: valueColor ?? cs.onSurface,
               fontWeight: FontWeight.w600,
               fontSize: 14,
             ),
@@ -240,11 +298,12 @@ class _InfoRow extends StatelessWidget {
 class _LogoutButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: cs.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.darkCardElevated),
+        border: Border.all(color: cs.outlineVariant),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -265,9 +324,9 @@ class _LogoutButton extends ConsumerWidget {
             fontSize: 15,
           ),
         ),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.chevron_right,
-          color: Color(0xFF4B5563),
+          color: cs.onSurfaceVariant,
           size: 20,
         ),
         onTap: () async {
@@ -307,20 +366,21 @@ class _EmptyUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.darkCard,
+        color: cs.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.darkCardElevated),
+        border: Border.all(color: cs.outlineVariant),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          Icon(Icons.person_off_outlined, color: Color(0xFF4B5563), size: 40),
-          SizedBox(height: 12),
+          Icon(Icons.person_off_outlined, color: cs.onSurfaceVariant, size: 40),
+          const SizedBox(height: 12),
           Text(
             'No hay sesión activa',
-            style: TextStyle(color: Color(0xFF6B7280), fontSize: 14),
+            style: TextStyle(color: cs.onSurfaceVariant, fontSize: 14),
           ),
         ],
       ),
